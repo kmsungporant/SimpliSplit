@@ -2,12 +2,14 @@
 
 ### A new way to efficiently process bill splitting with your friends!
 
+## Demo Website:
+[https://www.simplisplit.com]
+
 ## Motivation:
 
 The purpose of the app is to simplify the process of splitting the bill into large groups. Instead of one person having to pay with their card and calculate individual shares, the app allows users to scan a restaurant receipt and send a payment request via text message with a single button. It eliminates the need to calculate the tax/tip individually and send Venmo/Zelle requests. Although restaurants have been allowing customers to pay separately, it makes the whole process very tedious for the employee and further complicated. 
 
-## Demo Website:
-[https://www.simplisplit.com]
+
 
 ## Technologies Used:
 
