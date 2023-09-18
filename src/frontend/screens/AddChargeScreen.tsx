@@ -350,12 +350,11 @@ export default function AddChargeScreen({ navigation, route }: any) {
                       ${(totalPrice * (1 + tax) * Gratuity).toFixed(2)}
                     </Text>
                   </View>
-                </View>
-
-                <View className="flex-col items-center justify-between ">
-                  <View className="flex-row">
-                    <Button onPress={onPressGratuity} title="Select Gratuity" color="#1F6E8C" />
-                    <Button onPress={onPressTax} title="Select Tax" color="#1F6E8C" />
+                  <View className="flex-col items-center justify-between ">
+                    <View className="flex-row">
+                      <Button onPress={onPressGratuity} title="Select Gratuity" color="#1F6E8C" />
+                      <Button onPress={onPressTax} title="Select Tax" color="#1F6E8C" />
+                    </View>
                   </View>
                 </View>
 

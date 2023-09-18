@@ -104,11 +104,13 @@ export default function OrganizeScreen({ navigation, route }: any) {
             filename: "Receipt.jpg",
           },
         });
+        if (result == "sent") {
+          navigation.navigate("LandingPage", { user: user });
+        }
       } catch (error) {
         console.log(error);
       }
     }
-    navigation.navigate("LandingPage", { user: user });
   }
   function updateCurrentSlideIndex(e: any) {
     const contentOffsetX = e.nativeEvent.contentOffset.x;
