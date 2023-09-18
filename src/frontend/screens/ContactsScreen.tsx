@@ -7,7 +7,6 @@ import {
   Pressable,
   SafeAreaView,
   Text,
-  TouchableOpacity,
   View,
 } from "react-native";
 import ContactList from "../components/ContactsScreen/ContactList";

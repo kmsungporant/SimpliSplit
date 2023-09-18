@@ -1,5 +1,3 @@
-import { createNativeStackNavigator } from "@react-navigation/native-stack";
-import { default as Lottie, default as LottieView } from "lottie-react-native";
 import React, { useEffect, useRef, useState } from "react";
 import {
   Animated,
@@ -10,7 +8,6 @@ import {
   View,
   useWindowDimensions,
 } from "react-native";
-import { set } from "react-native-reanimated";
 import OnboardingItem from "../components/MainScreen/landingPage/OnboardingItem";
 import Logo from "../components/details/Logo";
 import NavButton from "../components/details/NavButton";

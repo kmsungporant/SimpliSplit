@@ -1,12 +1,9 @@
 import BottomSheet, { BottomSheetView, useBottomSheetSpringConfigs } from "@gorhom/bottom-sheet";
-import * as ImagePicker from "expo-image-picker";
 import { onAuthStateChanged } from "firebase/auth";
 import React, { useEffect, useRef, useState } from "react";
 import {
   ActivityIndicator,
-  Dimensions,
   Keyboard,
-  Modal,
   Text,
   TouchableOpacity,
   TouchableWithoutFeedback,
@@ -16,8 +13,7 @@ import { SafeAreaProvider } from "react-native-safe-area-context";
 import SignUp from "../components/MainScreen/Login/SignUp";
 import Login from "../components/MainScreen/Login/login";
 import Logo from "../components/details/Logo";
-import ProfilePic from "../components/details/profilePic";
-import { auth, firebase, firestore } from "../firebase";
+import { auth, firestore } from "../firebase";
 import UserData from "../interfaces/UserData";
 
 export default function LoginPageScreen({ navigation }: any) {
@@ -28,7 +24,6 @@ export default function LoginPageScreen({ navigation }: any) {
   const [userInfo, setUserInfo] = useState<UserData | null>(null);
   const [color, setColor] = useState<string>("");
   const [loadingUser, setLoadingUser] = useState<boolean>(false);
-  const [image, setImage] = useState<String>();
   const sheetRef = useRef<BottomSheet>(null);
 
   function getUserInfo(UID: string) {

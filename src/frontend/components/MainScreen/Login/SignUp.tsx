@@ -1,8 +1,6 @@
-import { AntDesign } from "@expo/vector-icons";
-import BottomSheet, { BottomSheetView } from "@gorhom/bottom-sheet";
 import firebase from "firebase/compat";
-import { useCallback, useEffect, useRef, useState } from "react";
-import { Alert, Dimensions, Keyboard, Text, TextInput, TouchableOpacity, View } from "react-native";
+import { useEffect, useRef, useState } from "react";
+import { Alert, Text, TextInput, TouchableOpacity, View } from "react-native";
 import { firestore } from "../../../firebase";
 
 export default function SignUp({ setSignUpMenu, setUser }: any) {

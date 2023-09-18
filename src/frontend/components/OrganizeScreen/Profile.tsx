@@ -1,13 +1,4 @@
-import {
-  FlatList,
-  Image,
-  Pressable,
-  SafeAreaView,
-  ScrollView,
-  Text,
-  View,
-  useWindowDimensions,
-} from "react-native";
+import { FlatList, Image, Text, View, useWindowDimensions } from "react-native";
 import ProfilePic from "../details/profilePic";
 
 export default function Profile({ contact }: { contact: any }) {

@@ -1,27 +1,20 @@
-// import { GOOGLE_CLOUD_VISION_API_KEY } from "@env";
-import { Entypo } from "@expo/vector-icons";
-import axios from "axios";
 import { Camera } from "expo-camera";
 import * as FileSystem from "expo-file-system";
 import * as ImageManipulator from "expo-image-manipulator";
 import React, { useEffect, useRef, useState } from "react";
 import {
-  ActivityIndicator,
   Alert,
   Dimensions,
   Image,
-  NativeEventEmitter,
-  NativeModules,
   Pressable,
+  SafeAreaView,
   StyleSheet,
   Text,
   TouchableOpacity,
   View,
 } from "react-native";
-import { SafeAreaView } from "react-native-safe-area-context";
 import Logo from "../components/details/Logo";
 import { firebase } from "../firebase";
-import { Orders } from "../interfaces/Orders";
 
 export default function CameraScreen({ navigation, route }: any) {
   const { user } = route.params;
@@ -33,47 +26,19 @@ export default function CameraScreen({ navigation, route }: any) {
   const { width, height } = Dimensions.get("window");
   let camera: Camera | null;
 
-  async function UploadImage(imageUpload: any) {
-    const response = await fetch(imageUpload);
-    const blob = await response.blob();
-    const fileName = imageUpload.substring(imageUpload.lastIndexOf("/") + 1);
-    const storageRef = firebase.storage().ref().child(fileName);
+  //   async function UploadImage(imageUpload: any) {
+  //     const response = await fetch(imageUpload);
+  //     const blob = await response.blob();
+  //     const fileName = imageUpload.substring(imageUpload.lastIndexOf("/") + 1);
+  //     const storageRef = firebase.storage().ref().child(fileName);
 
-    try {
-      const snapshot = await storageRef.put(blob);
-      console.log("Image uploaded successfully");
-    } catch (error) {
-      console.error("Error uploading image:", error);
-    }
-  }
-
-  const openCamera = async () => {
-    const { status } = await Camera.requestCameraPermissionsAsync();
-    if (status === "granted") {
-      setStartCamera(true);
-      setCameraLoading(false);
-    } else {
-      Alert.alert("Access denied", "Please check your camera permissions and try again.");
-    }
-  };
-
-  const takePicture = async () => {
-    if (!camera) return;
-    const photo = await camera.takePictureAsync();
-    setImage(photo.uri);
-    setStartCamera(false);
-    setConfirmPage(true);
-  };
-
-  useEffect(() => {
-    openCamera();
-  }, []);
-
-  const handleLayout = (event: any) => {
-    const { width, height } = event.nativeEvent.layout;
-  };
-
-  
+  //     try {
+  //       const snapshot = await storageRef.put(blob);
+  //       console.log("Image uploaded successfully");
+  //     } catch (error) {
+  //       console.error("Error uploading image:", error);
+  //     }
+  //   }
 
   // async function processImage() {
   //   try {
@@ -106,6 +71,32 @@ export default function CameraScreen({ navigation, route }: any) {
   //     throw error;
   //   }
   // };
+
+  const openCamera = async () => {
+    const { status } = await Camera.requestCameraPermissionsAsync();
+    if (status === "granted") {
+      setStartCamera(true);
+      setCameraLoading(false);
+    } else {
+      Alert.alert("Access denied", "Please check your camera permissions and try again.");
+    }
+  };
+
+  const takePicture = async () => {
+    if (!camera) return;
+    const photo = await camera.takePictureAsync();
+    setImage(photo.uri);
+    setStartCamera(false);
+    setConfirmPage(true);
+  };
+
+  useEffect(() => {
+    openCamera();
+  }, []);
+
+  const handleLayout = (event: any) => {
+    const { width, height } = event.nativeEvent.layout;
+  };
 
   const styles = StyleSheet.create({
     box: {

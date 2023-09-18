@@ -3,12 +3,9 @@ import React from "react";
 import {
   Image,
   Pressable,
-  SafeAreaViewBase,
-  SafeAreaViewComponent,
   Text,
   View,
 } from "react-native";
-import { SafeAreaView } from "react-native-safe-area-context";
 import { PhoneContact } from "../../interfaces/PhoneContact";
 import ProfilePic from "../details/profilePic";
 

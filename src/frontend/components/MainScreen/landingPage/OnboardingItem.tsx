@@ -1,6 +1,6 @@
 import { default as Lottie, default as LottieView } from "lottie-react-native";
-import React, { useRef, useState } from "react";
-import { StyleSheet, Text, View, useWindowDimensions } from "react-native";
+import React, { useRef } from "react";
+import { Text, View, useWindowDimensions } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { OnboardItems } from "../../../interfaces/OnboardingItems";
 

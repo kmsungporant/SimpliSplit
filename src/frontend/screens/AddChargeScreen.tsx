@@ -9,7 +9,6 @@ import {
   Alert,
   Button,
   Pressable,
-  SafeAreaView,
   ScrollView,
   Text,
   TextInput,
@@ -293,7 +292,6 @@ export default function AddChargeScreen({ navigation, route }: any) {
                       className="text-white"
                       onChangeText={(text) => handlePriceChange(text, i)}
                       keyboardType="decimal-pad"
-                      inputMode="numeric"
                       value={item.price.toString()}
                     />
                   </View>

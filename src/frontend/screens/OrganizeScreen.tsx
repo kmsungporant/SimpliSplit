@@ -1,19 +1,17 @@
 import { Fontisto } from "@expo/vector-icons";
 import * as SMS from "expo-sms";
-import { createContext, useEffect, useRef, useState } from "react";
+import { useRef, useState } from "react";
 import {
   Alert,
   Animated,
   FlatList,
   Pressable,
   SafeAreaView,
-  ScrollView,
   Text,
   TouchableOpacity,
   View,
   useWindowDimensions,
 } from "react-native";
-import { set } from "react-native-reanimated";
 import OrderItems from "../components/OrganizeScreen/OrderItems";
 import Profile from "../components/OrganizeScreen/Profile";
 import Logo from "../components/details/Logo";
