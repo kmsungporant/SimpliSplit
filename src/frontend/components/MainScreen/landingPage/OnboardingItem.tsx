@@ -20,7 +20,7 @@ export default function OnboardingItem({ item }: { item: OnboardItems }) {
         loop={true}
         source={item.animation}
       />
-      <View className="items-center w-full space-y-5">
+      <View className="items-center w-full ">
         <Text className="text-3xl font-black text-center text-Primary-color ">{item.title}</Text>
         <Text className="w-4/5 text-lg font-semibold text-center text-white">
           {item.description}

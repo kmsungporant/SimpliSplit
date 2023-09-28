@@ -19,7 +19,7 @@ import Logo from "../components/details/Logo";
 import { Orders } from "../interfaces/Orders";
 
 export default function AddChargeScreen({ navigation, route }: any) {
-  const { source, user } = route.params;
+  const { source, VenmoUserName } = route.params;
   const [orderItems, setOrderItems] = useState<Orders[]>([]);
   const [Gratuity, setGratuity] = useState<number>(0.18);
   const [tax, setTax] = useState<number>(0);
@@ -369,7 +369,7 @@ export default function AddChargeScreen({ navigation, route }: any) {
                             tax: tax,
                             finalPrice: finalPrice,
                             subTotal: totalPrice,
-                            user: user,
+                            VenmoUserName: VenmoUserName,
                           });
                         }
                   }

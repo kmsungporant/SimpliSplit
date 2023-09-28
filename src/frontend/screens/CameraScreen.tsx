@@ -17,7 +17,7 @@ import Logo from "../components/details/Logo";
 import { firebase } from "../firebase";
 
 export default function CameraScreen({ navigation, route }: any) {
-  const { user } = route.params;
+  const { VenmoUserName } = route.params;
   const [startCamera, setStartCamera] = useState<boolean>(false);
   const [cameraLoading, setCameraLoading] = useState<boolean>(true);
   const absoluteBoxRef = useRef(null);
@@ -128,7 +128,7 @@ export default function CameraScreen({ navigation, route }: any) {
               </Pressable>
               <Pressable
                 className="items-center px-12 py-2 mb-3 bg-green-400 border-black rounded-xl "
-                onPress={() => navigation.navigate("AddCharge", { user: user, source: image })}
+                onPress={() => navigation.navigate("AddCharge", { VenmoUserName: VenmoUserName, source: image })}
               >
                 <Text className="text-xl font-black text-white">Confirm</Text>
               </Pressable>

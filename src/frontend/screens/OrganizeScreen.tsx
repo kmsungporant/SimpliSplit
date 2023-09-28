@@ -24,7 +24,8 @@ export default function OrganizeScreen({ navigation, route }: any) {
   const { width } = useWindowDimensions();
   const scrollX = useRef(new Animated.Value(0)).current;
 
-  const { contacts, source, orderItems, Gratuity, tax, finalPrice, subTotal, user } = route.params;
+  const { contacts, source, orderItems, Gratuity, tax, finalPrice, subTotal, VenmoUserName } =
+    route.params;
   const [currPage, setCurrPage] = useState<number>(0);
   const [finalOrderItems, setFinalOrderItems] = useState<any>(orderItems);
   const [finalJson, setFinalJson] = useState<any>(
@@ -84,7 +85,7 @@ export default function OrganizeScreen({ navigation, route }: any) {
         resultString += `Tax (${tax}): $${(total * tax).toFixed(2)}\n`;
         resultString += `Gratuity (${Gratuity}): $${(total * (1 + tax) * Gratuity).toFixed(2)}\n`;
         resultString += `Total: $${(total * (1 + tax) * (1 + Gratuity)).toFixed(2)}\n\n`;
-        resultString += `https://venmo.com/${user.username}?txn=pay&note=SimpliSplit&amount=${(
+        resultString += `https://venmo.com/${VenmoUserName}?txn=pay&note=SimpliSplit&amount=${(
           total *
           (1 + tax) *
           (1 + Gratuity)
@@ -103,7 +104,7 @@ export default function OrganizeScreen({ navigation, route }: any) {
           },
         });
         if (result == "sent") {
-          navigation.navigate("LandingPage", { user: user });
+          navigation.navigate("LandingPage", { VenmoUserName: VenmoUserName });
         }
       } catch (error) {
         console.log(error);

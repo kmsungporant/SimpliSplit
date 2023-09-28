@@ -4,6 +4,7 @@ import {
   FlatList,
   SafeAreaView,
   Text,
+  TextInput,
   TouchableOpacity,
   View,
   useWindowDimensions,
@@ -40,14 +41,13 @@ export const slides = [
   },
 ];
 
-export default function LandingPage({ navigation, route }: any) {
-  const { user } = route.params;
+export default function LandingPage({ navigation }: any) {
   const [currentSlideIndex, setCurrentSlideIndex] = useState(0);
   const { width } = useWindowDimensions();
   const scrollX = useRef(new Animated.Value(0)).current;
   const slidesRef = useRef<any>(null);
   const [offset, setOffset] = useState(0);
-  const [finalScreen, setFinalScreen] = useState(false);
+  const [VenmoUserName, setVenmoUserName] = useState<String>("");
 
   function updateCurrentSlideIndex(e: any) {
     const contentOffsetX = e.nativeEvent.contentOffset.x;
@@ -83,7 +83,25 @@ export default function LandingPage({ navigation, route }: any) {
   return (
     <SafeAreaView className="items-center flex-1 bg-background-color">
       <Logo />
-      <NavButton currentSlideIndex={currentSlideIndex} scrollX={scrollX} slides={slides} />
+      <View className="w-3/5 mt-5">
+        <Text className="text-lg font-black text-white">Venmo Username</Text>
+        <TextInput
+          placeholder="Venmo Username"
+          inputMode="text"
+          className="h-10 px-2 text-white border-2 border-gray-600 bg-zinc-700/50 rounded-xl "
+          onChangeText={(text) => setVenmoUserName(text)}
+          clearButtonMode="always"
+          value={VenmoUserName == undefined ? "" : VenmoUserName.toString()}
+        />
+        <TouchableOpacity
+          className="items-center py-2 mt-5 border-2 border-Primary-color bg-teal rounded-3xl"
+          onPress={() => {
+            navigation.navigate("Camera", { VenmoUserName: VenmoUserName });
+          }}
+        >
+          <Text className="text-2xl font-bold text-white">Get Started</Text>
+        </TouchableOpacity>
+      </View>
       <FlatList
         onMomentumScrollEnd={updateCurrentSlideIndex}
         data={slides}
@@ -101,16 +119,7 @@ export default function LandingPage({ navigation, route }: any) {
         ref={slidesRef}
         keyExtractor={(item): any => item.id}
       />
-      <View className="justify-center w-3/5 ">
-        <TouchableOpacity
-          className="items-center py-3 mb-10 border-2 border-Primary-color bg-teal rounded-3xl"
-          onPress={() => {
-            navigation.navigate("Camera", { user: user });
-          }}
-        >
-          <Text className="text-2xl font-bold text-white">Get Started</Text>
-        </TouchableOpacity>
-      </View>
+      <NavButton currentSlideIndex={currentSlideIndex} scrollX={scrollX} slides={slides} />
     </SafeAreaView>
   );
 }

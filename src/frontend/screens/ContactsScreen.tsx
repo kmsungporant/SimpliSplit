@@ -1,21 +1,14 @@
 import * as Contacts from "expo-contacts";
 import * as React from "react";
 import { useEffect, useState } from "react";
-import {
-  Alert,
-  FlatList,
-  Pressable,
-  SafeAreaView,
-  Text,
-  View,
-} from "react-native";
+import { Alert, FlatList, Pressable, SafeAreaView, Text, View } from "react-native";
 import ContactList from "../components/ContactsScreen/ContactList";
 import SelectionPills from "../components/ContactsScreen/SelectionPills";
 import Search from "../components/details/Search";
 import { PhoneContact } from "../interfaces/PhoneContact";
 
 export default function ContactsScreen({ navigation, route }: any) {
-  const { orderItems, source, tax, Gratuity, finalPrice, subTotal, user } = route.params;
+  const { orderItems, source, tax, Gratuity, finalPrice, subTotal, VenmoUserName } = route.params;
   const [contacts, setContacts] = useState<any>([]);
   const [searchText, setSearchText] = useState<String>("");
   const [selectedContacts, setSelectedContacts] = useState<PhoneContact[]>([]);
@@ -109,7 +102,7 @@ export default function ContactsScreen({ navigation, route }: any) {
                       tax: tax,
                       finalPrice: finalPrice,
                       subTotal: subTotal,
-                      user: user,
+                      VenmoUserName: VenmoUserName,
                     });
               }}
             >
