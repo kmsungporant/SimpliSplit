@@ -92,6 +92,7 @@ export default function LandingPage({ navigation }: any) {
           onChangeText={(text) => setVenmoUserName(text)}
           clearButtonMode="always"
           value={VenmoUserName == undefined ? "" : VenmoUserName.toString()}
+          onSubmitEditing={() => navigation.navigate("Camera", { VenmoUserName: VenmoUserName })}
         />
         <TouchableOpacity
           className="items-center py-2 mt-5 border-2 border-Primary-color bg-teal rounded-3xl"

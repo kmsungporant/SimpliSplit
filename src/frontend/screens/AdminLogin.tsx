@@ -40,6 +40,7 @@ export default function AdminLogin({ navigation }: any) {
               }`}
               onChangeText={(text) => setAdminId(text)}
               clearButtonMode="always"
+              onSubmitEditing={() => handleSubmit(adminId)}
             />
             <TouchableOpacity
               onPress={() => handleSubmit(adminId)}

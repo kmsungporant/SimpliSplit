@@ -1,11 +1,6 @@
 import { AntDesign } from "@expo/vector-icons";
 import React from "react";
-import {
-  Image,
-  Pressable,
-  Text,
-  View,
-} from "react-native";
+import { Image, Pressable, Text, View } from "react-native";
 import { PhoneContact } from "../../interfaces/PhoneContact";
 import ProfilePic from "../details/profilePic";
 
@@ -36,7 +31,7 @@ export default function ContactList({
         className=""
       >
         <View className="flex-row items-center justify-between py-3 rounded-xl">
-          <View className="flex-col w-full mx-3">
+          <View className="w-full mx-3 ">
             <View className="flex-row items-center">
               {contact.imageAvailable ? (
                 <Image

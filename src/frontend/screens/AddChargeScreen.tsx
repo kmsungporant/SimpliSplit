@@ -324,16 +324,16 @@ export default function AddChargeScreen({ navigation, route }: any) {
 
           <BottomSheet
             ref={sheetRef}
-            snapPoints={["10%", "40%"]}
+            snapPoints={["10%", "35%"]}
             animationConfigs={animationConfigs}
           >
-            <BottomSheetView className="bottom-0 z-50 self-center w-full pb-5 bg-white rounded-t-3xl">
+            <BottomSheetView className="z-50 w-full bg-white rounded-t-3xl">
               <View className="px-12 mt-2">
                 <View className="flex-row items-center justify-between ">
                   <Text className="text-xl font-black text-black ">Total Due</Text>
                   <Text className="text-xl font-black text-black">${finalPrice.toFixed(2)}</Text>
                 </View>
-                <View className="mt-5">
+                <View className="mt-10">
                   <View className="flex-row items-center justify-between ">
                     <Text className="w-24 text-xl text-black">SubTotal</Text>
                     <Text className="text-black">${totalPrice.toFixed(2)}</Text>
