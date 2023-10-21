@@ -13,7 +13,8 @@
     },
     "assetBundlePatterns": ["**/*"],
     "ios": {
-      "supportsTablet": true
+      "supportsTablet": true,
+      "bundleIdentifier": "com.kmsungporant.SimpliSplit"
     },
     "android": {
       "adaptiveIcon": {
@@ -23,6 +24,11 @@
     },
     "web": {
       "favicon": "./assets/favicon.png"
+    },
+    "extra": {
+      "eas": {
+        "projectId": "a3d552f6-fca6-4ca4-b2e9-c32fbc0fc1f8"
+      }
     }
   }
 }

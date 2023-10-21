@@ -80,6 +80,7 @@ export default function LandingPage({ navigation }: any) {
     };
   }, [offset]);
 
+
   return (
     <SafeAreaView className="items-center flex-1 bg-background-color">
       <Logo />

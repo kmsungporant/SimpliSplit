@@ -12,8 +12,9 @@ const Stack = createNativeStackNavigator();
 
 export default function Screens() {
   return (
+        
     <NavigationContainer>
-      <Stack.Navigator initialRouteName="AdminLogin" screenOptions={{ headerShown: false }}>
+      <Stack.Navigator initialRouteName="LandingPage" screenOptions={{ headerShown: false }}>
         <Stack.Screen name="AdminLogin" component={AdminLogin} />
         <Stack.Screen name="Login" component={LoginPageScreen} />
         <Stack.Screen name="LandingPage" component={LandingPage} />

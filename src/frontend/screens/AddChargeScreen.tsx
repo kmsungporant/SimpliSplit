@@ -29,6 +29,9 @@ export default function AddChargeScreen({ navigation, route }: any) {
   const [newItemPrice, setNewItemPrice] = useState<string>("");
   const [loading, setLoading] = useState(true);
   const sheetRef = useRef<BottomSheet>(null);
+  const VERYFI_APIKEY = "apikey kmsungporant:a406632238cde4fda253987790487d0c";
+  const VERYFI_AUTH = "vrfuJpylIXG3HjPRm0hS808OLmRDEWKaNJ1nvYa";
+  const RAPID_APIKEY = "wX3ZexbVcf4T8ceHRqDM41cMBCSJ79W2dd0trMNZ";
 
   const getLocation = async () => {
     try {
@@ -63,7 +66,7 @@ export default function AddChargeScreen({ navigation, route }: any) {
     try {
       const response = await axios.get(`https://api.api-ninjas.com/v1/salestax?zip_code=${zip}`, {
         headers: {
-          "X-Api-Key": String(process.env.RAPID_APIKEY),
+          "X-Api-Key": RAPID_APIKEY,
           "Content-Type": "application/json",
         },
       });
@@ -77,8 +80,8 @@ export default function AddChargeScreen({ navigation, route }: any) {
     const endpoint = "https://api.veryfi.com/api/v8/partner/documents/";
     const headers = {
       Accept: "application/json",
-      "CLIENT-ID": String(process.env.VERYFI_AUTH),
-      AUTHORIZATION: String(process.env.VERYFI_APIKEY),
+      "CLIENT-ID": VERYFI_AUTH,
+      AUTHORIZATION: VERYFI_APIKEY,
     };
 
     const formData = new FormData();
@@ -108,10 +111,10 @@ export default function AddChargeScreen({ navigation, route }: any) {
         })
       );
       setFinalPrice(totalPrice * (1 + tax) * (1 + Gratuity));
-      setLoading(false);
     } catch (error) {
-      console.error(error);
+      Alert.alert("Scanning Error", "You can continue without Scanning the receipt.");
     }
+    setLoading(false);
   }
 
   const handlePriceChange = (text: string, index: number) => {

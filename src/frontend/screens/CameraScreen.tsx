@@ -19,9 +19,7 @@ import { firebase } from "../firebase";
 export default function CameraScreen({ navigation, route }: any) {
   const { VenmoUserName } = route.params;
   const [startCamera, setStartCamera] = useState<boolean>(false);
-  const [cameraLoading, setCameraLoading] = useState<boolean>(true);
   const absoluteBoxRef = useRef(null);
-  const [confirmPage, setConfirmPage] = useState<boolean>(false);
   const [image, setImage] = useState("");
   const { width, height } = Dimensions.get("window");
   let camera: Camera | null;
@@ -76,7 +74,6 @@ export default function CameraScreen({ navigation, route }: any) {
     const { status } = await Camera.requestCameraPermissionsAsync();
     if (status === "granted") {
       setStartCamera(true);
-      setCameraLoading(false);
     } else {
       Alert.alert("Access denied", "Please check your camera permissions and try again.");
     }
@@ -87,7 +84,6 @@ export default function CameraScreen({ navigation, route }: any) {
     const photo = await camera.takePictureAsync();
     setImage(photo.uri);
     setStartCamera(false);
-    setConfirmPage(true);
   };
 
   useEffect(() => {
@@ -128,14 +124,16 @@ export default function CameraScreen({ navigation, route }: any) {
               </Pressable>
               <Pressable
                 className="items-center px-12 py-2 mb-3 bg-green-400 border-black rounded-xl "
-                onPress={() => navigation.navigate("AddCharge", { VenmoUserName: VenmoUserName, source: image })}
+                onPress={() =>
+                  navigation.navigate("AddCharge", { VenmoUserName: VenmoUserName, source: image })
+                }
               >
                 <Text className="text-xl font-black text-white">Confirm</Text>
               </Pressable>
             </View>
           </SafeAreaView>
         </>
-      ) : (
+      ) : startCamera ? (
         <Camera
           className="flex-1 w-full"
           ref={(r) => {
@@ -162,6 +160,10 @@ export default function CameraScreen({ navigation, route }: any) {
             </View>
           </SafeAreaView>
         </Camera>
+      ) : (
+        <SafeAreaView className="items-center justify-between h-full">
+          <Logo />
+        </SafeAreaView>
       )}
     </View>
   );
