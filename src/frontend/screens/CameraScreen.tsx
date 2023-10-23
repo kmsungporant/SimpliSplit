@@ -13,6 +13,7 @@ import {
   TouchableOpacity,
   View,
 } from "react-native";
+import { set } from "react-native-reanimated";
 import Logo from "../components/details/Logo";
 import { firebase } from "../firebase";
 
@@ -118,6 +119,7 @@ export default function CameraScreen({ navigation, route }: any) {
                 className="items-center px-12 py-2 mb-3 bg-Primary-color border-Primary-color rounded-xl"
                 onPress={() => {
                   setImage("");
+                  setStartCamera(true);
                 }}
               >
                 <Text className="text-xl font-black text-white ">Retry</Text>

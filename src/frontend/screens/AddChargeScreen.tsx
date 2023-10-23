@@ -77,28 +77,30 @@ export default function AddChargeScreen({ navigation, route }: any) {
     }
   };
   async function processImage() {
-    const endpoint = "https://api.veryfi.com/api/v8/partner/documents/";
+    const endpoint = "https://api.mindee.net/v1/products/mindee/expense_receipts/v5/predict";
     const headers = {
-      Accept: "application/json",
-      "CLIENT-ID": VERYFI_AUTH,
-      AUTHORIZATION: VERYFI_APIKEY,
+      Authorization: "Token 3eb14b2677e44a63b7ba915b2dc97768",
+      "Content-Type": "multipart/form-data",
     };
 
-    const formData = new FormData();
-    formData.append("file", {
-      uri: source,
-      type: "image/jpeg",
-      name: "invoice.jpg",
-    });
+    let data = new FormData();
+    data.append("document", { uri: source, name: "receipt.jpg", type: "image/jpeg" });
 
     try {
-      const response = await axios.post(endpoint, formData, { headers });
+      const response = await axios.post(endpoint, data, { headers });
       let res = [];
-      for (let i = 0; i < response.data.line_items.length; i++) {
+      for (
+        let i = 0;
+        i < response.data.document.inference.pages[0].prediction.line_items.length;
+        i++
+      ) {
         let temp = {
-          itemName: response.data.line_items[i].description,
-          price: response.data.line_items[i].total,
-          quantity: response.data.line_items[i].quantity,
+          itemName: response.data.document.inference.pages[0].prediction.line_items[i].description,
+          price: response.data.document.inference.pages[0].prediction.line_items[i].total_amount,
+          quantity:
+            response.data.document.inference.pages[0].prediction.line_items[i].quantity != null
+              ? response.data.document.inference.pages[0].prediction.line_items[i].quantity
+              : 1,
         };
         if (temp.price !== null) {
           res.push(temp);
