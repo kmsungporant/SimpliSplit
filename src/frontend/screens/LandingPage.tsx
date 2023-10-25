@@ -1,11 +1,16 @@
+import { AntDesign } from "@expo/vector-icons";
+import "expo-dev-client";
 import React, { useEffect, useRef, useState } from "react";
 import {
   Animated,
   FlatList,
+  Keyboard,
+  KeyboardAvoidingView,
   SafeAreaView,
   Text,
   TextInput,
   TouchableOpacity,
+  TouchableWithoutFeedback,
   View,
   useWindowDimensions,
 } from "react-native";
@@ -80,48 +85,59 @@ export default function LandingPage({ navigation }: any) {
     };
   }, [offset]);
 
-
   return (
-    <SafeAreaView className="items-center flex-1 bg-background-color">
-      <Logo />
-      <View className="w-3/5 mt-5">
-        <Text className="text-lg font-black text-white">Venmo Username</Text>
-        <TextInput
-          placeholder="Venmo Username"
-          inputMode="text"
-          className="h-10 px-2 text-white border-2 border-gray-600 bg-zinc-700/50 rounded-xl "
-          onChangeText={(text) => setVenmoUserName(text)}
-          clearButtonMode="always"
-          value={VenmoUserName == undefined ? "" : VenmoUserName.toString()}
-          onSubmitEditing={() => navigation.navigate("Camera", { VenmoUserName: VenmoUserName })}
+    <TouchableWithoutFeedback
+      onPress={() => {
+        if (Keyboard.isVisible()) {
+          Keyboard.dismiss();
+        }
+      }}
+    >
+      <SafeAreaView className="flex-1 bg-background-color">
+        <Logo />
+        <View className="flex-row items-end justify-between w-5/6 px-16 mt-8 gap-x-5 bg-background-color">
+          <View className="w-full">
+            <Text className="text-lg font-black text-white">Venmo Username</Text>
+            <TextInput
+              placeholder="Venmo Username"
+              inputMode="text"
+              className="h-12 px-2 text-white border-2 border-gray-600 bg-zinc-700/50 rounded-xl "
+              onChangeText={(text) => setVenmoUserName(text)}
+              clearButtonMode="always"
+              value={VenmoUserName == undefined ? "" : VenmoUserName.toString()}
+              onSubmitEditing={() =>
+                navigation.navigate("Camera", { VenmoUserName: VenmoUserName })
+              }
+            />
+          </View>
+          <TouchableOpacity
+            className="h-12 p-3 border-2 border-Primary-color bg-teal rounded-xl"
+            onPress={() => {
+              navigation.navigate("Camera", { VenmoUserName: VenmoUserName });
+            }}
+          >
+            <AntDesign name="arrowright" size={22} color="white" />
+          </TouchableOpacity>
+        </View>
+        <FlatList
+          onMomentumScrollEnd={updateCurrentSlideIndex}
+          data={slides}
+          renderItem={({ item }) => <OnboardingItem item={item} />}
+          horizontal
+          pagingEnabled
+          showsHorizontalScrollIndicator={false}
+          bounces={false}
+          onScroll={Animated.event([{ nativeEvent: { contentOffset: { x: scrollX } } }], {
+            useNativeDriver: false,
+          })}
+          onViewableItemsChanged={viewableItemsChanged}
+          viewabilityConfig={viewConfig}
+          scrollEventThrottle={32}
+          ref={slidesRef}
+          keyExtractor={(item): any => item.id}
         />
-        <TouchableOpacity
-          className="items-center py-2 mt-5 border-2 border-Primary-color bg-teal rounded-3xl"
-          onPress={() => {
-            navigation.navigate("Camera", { VenmoUserName: VenmoUserName });
-          }}
-        >
-          <Text className="text-2xl font-bold text-white">Get Started</Text>
-        </TouchableOpacity>
-      </View>
-      <FlatList
-        onMomentumScrollEnd={updateCurrentSlideIndex}
-        data={slides}
-        renderItem={({ item }) => <OnboardingItem item={item} />}
-        horizontal
-        pagingEnabled
-        showsHorizontalScrollIndicator={false}
-        bounces={false}
-        onScroll={Animated.event([{ nativeEvent: { contentOffset: { x: scrollX } } }], {
-          useNativeDriver: false,
-        })}
-        onViewableItemsChanged={viewableItemsChanged}
-        viewabilityConfig={viewConfig}
-        scrollEventThrottle={32}
-        ref={slidesRef}
-        keyExtractor={(item): any => item.id}
-      />
-      <NavButton currentSlideIndex={currentSlideIndex} scrollX={scrollX} slides={slides} />
-    </SafeAreaView>
+        <NavButton currentSlideIndex={currentSlideIndex} scrollX={scrollX} slides={slides} />
+      </SafeAreaView>
+    </TouchableWithoutFeedback>
   );
 }
