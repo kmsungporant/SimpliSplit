@@ -1,5 +1,4 @@
 import { AntDesign } from "@expo/vector-icons";
-import "expo-dev-client";
 import React, { useEffect, useRef, useState } from "react";
 import {
   Animated,

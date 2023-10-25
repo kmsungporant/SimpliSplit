@@ -23,8 +23,8 @@ export default function Profile({ contact }: { contact: any }) {
           data={contact.itemsOrdered}
           renderItem={({ item }) => {
             return (
-              <View className="flex-row justify-between mt-5 space-x-32">
-                <View className="flex-row gap-2">
+              <View className="flex-row justify-between mt-5 space-x-16">
+                <View className="flex-row gap-2 w-52">
                   <Text className="font-bold text-white ">{item.itemName}</Text>
                 </View>
 

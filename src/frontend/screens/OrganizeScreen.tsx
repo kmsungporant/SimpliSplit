@@ -61,9 +61,13 @@ export default function OrganizeScreen({ navigation, route }: any) {
     const phoneNumbers: any[] = [];
     let resultString = "\n\n";
     const isAvailable: boolean = await SMS.isAvailableAsync();
+
     resultString += `SubTotal: $${subTotal}\n`;
-    resultString += `Tax (${tax}): $${(subTotal * tax).toFixed(2)}\n`;
-    resultString += `Gratuity (${Gratuity}): $${(subTotal * (1 + tax) * Gratuity).toFixed(2)}\n`;
+    resultString += `Tax (${
+      isNaN((tax / finalPrice) * 100) ? "0" : ((tax / finalPrice) * 100).toFixed(2)
+    }%)\n`;
+
+    resultString += `Gratuity (${Gratuity}%): $${((subTotal + tax) * Gratuity).toFixed(2)}\n`;
     resultString += `Total Due: ${finalPrice.toFixed(2)}\n\n`;
     resultString += `--------------------------\n\n`;
 
@@ -82,14 +86,22 @@ export default function OrganizeScreen({ navigation, route }: any) {
         });
         resultString += `\n`;
         resultString += `Subtotal: $${total.toFixed(2)}\n`;
-        resultString += `Tax (${tax}): $${(total * tax).toFixed(2)}\n`;
-        resultString += `Gratuity (${Gratuity}): $${(total * (1 + tax) * Gratuity).toFixed(2)}\n`;
-        resultString += `Total: $${(total * (1 + tax) * (1 + Gratuity)).toFixed(2)}\n\n`;
-        resultString += `https://venmo.com/${VenmoUserName}?txn=pay&note=SimpliSplit&amount=${(
-          total *
-          (1 + tax) *
-          (1 + Gratuity)
-        ).toFixed(2)}`;
+        resultString += `Tax (${
+          isNaN((tax / finalPrice) * 100) ? "0" : ((tax / finalPrice) * 100).toFixed(2)
+        }%): $${((tax / finalPrice) * total).toFixed(2)}\n`;
+        resultString += `Gratuity (${Gratuity}): $${((total + tax) * Gratuity).toFixed(2)}\n`;
+        resultString += `Total: $${(
+          total +
+          (tax / finalPrice) * total +
+          (total + tax) * Gratuity
+        ).toFixed(2)}\n\n`;
+        if (VenmoUserName !== "") {
+          resultString += `https://venmo.com/${VenmoUserName}?txn=pay&note=SimpliSplit&amount=${(
+            (total + tax) *
+            (1 + Gratuity)
+          ).toFixed(2)}`;
+        }
+
         resultString += `\n--------------------------\n\n`;
       });
     }

@@ -13,6 +13,7 @@ export default function Search({ setSearchText }: any) {
           onChangeText={(text) => setSearchText(text)}
           clearButtonMode="while-editing"
           placeholderTextColor="white"
+          autoCorrect={false}
         />
       </View>
     </View>
