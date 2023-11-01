@@ -1,5 +1,6 @@
 import { AntDesign, FontAwesome } from "@expo/vector-icons";
 import BottomSheet, { BottomSheetView, useBottomSheetSpringConfigs } from "@gorhom/bottom-sheet";
+import { Picker } from "@react-native-picker/picker";
 import axios from "axios";
 import { useEffect, useRef, useState } from "react";
 import {
@@ -17,14 +18,17 @@ import {
   TouchableWithoutFeedback,
   View,
 } from "react-native";
+import ItemsModal from "../components/addChargeScreen/ItemsModal";
 import Logo from "../components/details/Logo";
 import { Orders } from "../interfaces/Orders";
 
 export default function AddChargeScreen({ navigation, route }: any) {
   const { source, VenmoUserName } = route.params;
   const [orderItems, setOrderItems] = useState<Orders[]>([]);
-  const [Gratuity, setGratuity] = useState<number>(0.18);
+  const [gratuity, setGratuity] = useState<number>(0.18);
+  const [gratuityPicker, setGratuityPicker] = useState<boolean>(false);
   const [tax, setTax] = useState<number>(0);
+  const [taxPicker, setTaxPicker] = useState<boolean>(false);
   const [totalPrice, setTotalPrice] = useState<number>(0);
   const [finalPrice, setFinalPrice] = useState<number>(0);
   const [editingItem, setEditingItem] = useState<number>(-1);
@@ -61,10 +65,12 @@ export default function AddChargeScreen({ navigation, route }: any) {
           res.push(temp);
         }
       }
+
       setOrderItems(
-        res.flatMap((item: any) => {
+        res.flatMap((item) => {
           const { itemName, quantity, price } = item;
-          return Array.from({ length: quantity }, () => ({ itemName, price }));
+          const pricePerItem = price / quantity;
+          return Array.from({ length: quantity }, () => ({ itemName, price: pricePerItem }));
         })
       );
 
@@ -75,28 +81,51 @@ export default function AddChargeScreen({ navigation, route }: any) {
 
       setTax(taxRes);
       if (isNaN(taxRes)) {
-        Alert.prompt("Sales Tax Not Found", "Enter Total Tax Amount", [
-          {
-            text: "Cancel",
-            onPress: () => setTax(finalPrice * 0.6),
-            style: "cancel",
-          },
-          {
-            text: "OK",
-            onPress: (text: any) => setTax(parseFloat(text)),
-          },
-        ]);
+        setTax(0);
       }
 
       if (res.length === 0) {
         Alert.alert("No Items Found", "Please manually enter the items.");
       }
 
-      setFinalPrice((totalPrice + tax) * (1 + Gratuity));
+      setFinalPrice((totalPrice + tax) * (1 + gratuity));
     } catch (error) {
-      Alert.alert("No Items Found", "Please manually enter the items.");
+      console.log("Failed");
     }
     setLoading(false);
+  }
+
+  function pickGratuity() {
+    const pickerItems = [];
+    for (let i = 0; i <= 100; i++) {
+      pickerItems.push(<Picker.Item key={i} label={i.toString() + "%"} value={i} />);
+    }
+    return (
+      <Picker
+        selectedValue={gratuity * 100}
+        onValueChange={(itemValue) => setGratuity(itemValue / 100)}
+      >
+        {pickerItems}
+      </Picker>
+    );
+  }
+
+  function pickTax() {
+    const pickerItems = [];
+    for (let i = 0; i <= 100; i++) {
+      pickerItems.push(<Picker.Item key={i} label={i.toString() + "%"} value={i} />);
+    }
+    return (
+      <Picker
+        selectedValue={parseFloat(((tax / totalPrice) * 100).toFixed(0))}
+        onValueChange={(itemValue: any) => {
+          setTax(parseFloat(totalPrice * (itemValue / 100) + ""));
+          console.log((tax / totalPrice) * 100);
+        }}
+      >
+        {pickerItems}
+      </Picker>
+    );
   }
 
   function handleRemoveItem(index: number) {
@@ -105,120 +134,6 @@ export default function AddChargeScreen({ navigation, route }: any) {
       newOrderItems.splice(index, 1);
       return newOrderItems;
     });
-  }
-
-  function changeItem(index: number) {
-    const currItem = orderItems[index];
-    const newOrderItems = [...orderItems];
-    if (index === -2) {
-      let name = "";
-      let price = 0.0;
-      return (
-        <View className="w-full">
-          <Text className="m-5 text-3xl font-black text-blue-black">Add Item</Text>
-          <View className="flex-row items-center justify-between px-5 mt-4">
-            <Text className="text-xl font-semibold text-black">Item Name</Text>
-            <TextInput
-              className="w-3/5 p-2 bg-gray-100 rounded-2xl"
-              placeholder="Enter Item Name"
-              onChangeText={(text) => {
-                name = text;
-              }}
-            />
-          </View>
-          <View className="flex-row items-center justify-between px-5 mt-4">
-            <Text className="text-xl font-semibold text-black">Item Price</Text>
-            <TextInput
-              className="w-3/5 p-2 bg-gray-100 text- rounded-2xl"
-              placeholder="Enter Item Price"
-              onChangeText={(text) => {
-                price = parseFloat(text);
-              }}
-              keyboardType="decimal-pad"
-            />
-          </View>
-          <View className="flex-row justify-between px-3 py-5 ">
-            <Pressable
-              onPress={() => setEditingItem(-1)}
-              className="items-center px-12 py-4 mb-3 bg-Primary-color border-Primary-color rounded-xl"
-            >
-              <Text className="text-xl font-black">Cancel</Text>
-            </Pressable>
-            <Pressable
-              onPress={() => {
-                newOrderItems.push({ itemName: name, price: price });
-                setOrderItems(newOrderItems);
-                setEditingItem(-1);
-              }}
-              className="px-12 py-4 mb-3 bg-green-400 border-black rounded-xl"
-            >
-              <Text className="w-20 text-xl font-black text-center">Add</Text>
-            </Pressable>
-          </View>
-        </View>
-      );
-    } else {
-      if (orderItems.length !== 0) {
-        let name = currItem.itemName;
-        let price = currItem.price;
-        return (
-          <View className="w-full">
-            <Text className="m-5 text-3xl font-black text-blue-black">Change Item</Text>
-            <Pressable
-              className="absolute right-5 top-5"
-              onPress={() => {
-                handleRemoveItem(index);
-                setEditingItem(-1);
-              }}
-            >
-              <FontAwesome name="trash" size={30} />
-            </Pressable>
-            <View className="flex-row items-center justify-between px-5 mt-4">
-              <Text className="text-xl font-semibold text-black">Item Name</Text>
-              <TextInput
-                className="w-3/5 p-2 bg-gray-100 rounded-2xl"
-                placeholder="Enter Item Name"
-                defaultValue={name}
-                onChangeText={(text) => {
-                  name = text;
-                }}
-              />
-            </View>
-            <View className="flex-row items-center justify-between px-5 mt-4">
-              <Text className="text-xl font-semibold text-black">Item Price</Text>
-              <TextInput
-                className="w-3/5 p-2 bg-gray-100 text- rounded-2xl"
-                placeholder="Enter Item Price"
-                defaultValue={parseFloat(price.toString()).toFixed(2)}
-                onChangeText={(text) => {
-                  price = parseFloat(text);
-                }}
-                keyboardType="decimal-pad"
-              />
-            </View>
-            <View className="flex-row justify-between px-3 my-5">
-              <Pressable
-                onPress={() => setEditingItem(-1)}
-                className="items-center px-12 py-4 mb-3 bg-Primary-color border-Primary-color rounded-xl"
-              >
-                <Text className="text-xl font-black">Cancel</Text>
-              </Pressable>
-              <Pressable
-                onPress={() => {
-                  newOrderItems[index].price = price || 0.0;
-                  newOrderItems[index].itemName = name;
-                  setOrderItems(newOrderItems);
-                  setEditingItem(-1);
-                }}
-                className="items-center px-12 py-4 mb-3 bg-green-400 border-black rounded-xl "
-              >
-                <Text className="w-20 text-xl font-black text-center">Update</Text>
-              </Pressable>
-            </View>
-          </View>
-        );
-      }
-    }
   }
 
   useEffect(() => {
@@ -242,49 +157,11 @@ export default function AddChargeScreen({ navigation, route }: any) {
   }, [orderItems]);
 
   useEffect(() => {
-    setFinalPrice((totalPrice + tax) * (1 + Gratuity));
+    setFinalPrice((totalPrice + tax) * (1 + gratuity));
     if (orderItems.length === 0) {
       setTax(0);
     }
-  }, [Gratuity, tax, totalPrice, editingItem]);
-
-  function onPressGratuity() {
-    ActionSheetIOS.showActionSheetWithOptions(
-      {
-        options: ["0%", "10%", "20%", "Custom", "Cancel"],
-        destructiveButtonIndex: 4,
-        cancelButtonIndex: 4,
-      },
-      (buttonIndex) => {
-        switch (buttonIndex) {
-          case 0:
-            setGratuity(0);
-            break;
-          case 1:
-            setGratuity(0.1);
-            break;
-          case 2:
-            setGratuity(0.2);
-            break;
-          case 3:
-            Alert.prompt("Custom Gratuity", "Enter a gratuity percentage", [
-              {
-                text: "Cancel",
-                onPress: () => setGratuity(0.18),
-                style: "cancel",
-              },
-              {
-                text: "OK",
-                onPress: (text: any) => setGratuity(parseFloat(text) / 100),
-              },
-            ]);
-            break;
-          default:
-            break;
-        }
-      }
-    );
-  }
+  }, [gratuity, tax, totalPrice, editingItem]);
 
   const animationConfigs = useBottomSheetSpringConfigs({
     damping: 80,
@@ -313,120 +190,165 @@ export default function AddChargeScreen({ navigation, route }: any) {
         >
           <View className="w-full h-full">
             <Logo />
-
-            <View className="z-10 flex-row self-center justify-between w-4/5 mt-6 border-b-2 border-white bg-background-color">
+            <View className="z-10 flex-row self-center justify-between w-4/5 mt-6 border-b-2 border-white bg-background-color ">
               <Text className="px-2 text-2xl font-black text-white ">Orders</Text>
               <Pressable onPress={() => setEditingItem(-2)}>
                 <AntDesign name="pluscircle" size={24} color="white" />
               </Pressable>
             </View>
-            <ScrollView className="flex-1 w-full px-8 gap-y-2">
-              <View className="py-4">
-                {orderItems.map((item: any, i: number) => (
-                  <Pressable
-                    className="flex-row items-center justify-between my-2"
-                    onPress={() => setEditingItem(i)}
-                    key={i}
-                  >
-                    <Text className="ml-3 text-white text-md w-52">{item.itemName} </Text>
-                    <View className="flex-row ">
-                      <Text className="text-lg font-black text-white">
-                        $
-                        {isNaN(item.price) || item.price === 0
-                          ? (0).toFixed(2)
-                          : item.price.toFixed(2)}
-                      </Text>
-                    </View>
-                  </Pressable>
-                ))}
-              </View>
-            </ScrollView>
+            <View className="h-1/3">
+              <ScrollView className="px-10 gap-y-2">
+                <View className="">
+                  {orderItems.map((item: any, i: number) => (
+                    <Pressable
+                      className="flex-row items-center justify-between my-2"
+                      onPress={() => setEditingItem(i)}
+                      key={i}
+                    >
+                      <Text className="w-48 text-white text-md">{item.itemName} </Text>
+                      <View className="flex-row ">
+                        <Text className="text-lg font-black text-white">
+                          $
+                          {isNaN(item.price) || item.price === 0
+                            ? (0).toFixed(2)
+                            : item.price.toFixed(2)}
+                        </Text>
+                      </View>
+                    </Pressable>
+                  ))}
+                </View>
+              </ScrollView>
+            </View>
 
             {editingItem != -1 ? (
-              <KeyboardAvoidingView behavior="padding" className="z-20 bg-white rounded-t-3xl">
-                {changeItem(editingItem)}
+              <KeyboardAvoidingView
+                behavior="padding"
+                className="absolute bottom-0 z-20 w-full bg-white rounded-t-3xl"
+              >
+                {ItemsModal(
+                  editingItem,
+                  orderItems,
+                  setOrderItems,
+                  setEditingItem,
+                  handleRemoveItem
+                )}
               </KeyboardAvoidingView>
             ) : (
-              <BottomSheet
-                ref={sheetRef}
-                snapPoints={["10%", "35%"]}
-                animationConfigs={animationConfigs}
-              >
-                <BottomSheetView className="z-50 w-full bg-white rounded-t-3xl">
-                  <View className="px-12 mt-2">
-                    <View className="flex-row items-center justify-between ">
-                      <Text className="text-xl font-black text-black ">Total Due</Text>
-                      <Text className="text-xl font-black text-black">
-                        ${finalPrice.toFixed(2)}
-                      </Text>
-                    </View>
-                    <View className="my-6">
-                      <View className="flex-row items-center justify-between ">
-                        <Text className="w-24 text-xl text-black">SubTotal</Text>
-                        <Text className="text-black">${totalPrice.toFixed(2)}</Text>
-                      </View>
-                      <Pressable
-                        onPress={() => {
-                          Alert.prompt("Custom Tax", "Enter Total Tax Amount", [
-                            {
-                              text: "Cancel",
-                              onPress: () => setTax(totalPrice * 0.6),
-                              style: "cancel",
-                            },
-                            {
-                              text: "OK",
-                              onPress: (text: any) => setTax(parseFloat(text)),
-                            },
-                          ]);
-                        }}
-                        className="flex-row items-center justify-between"
-                      >
-                        <Text className="text-xl text-black">
-                          Tax{" "}
-                          {`(${
-                            isNaN((tax / totalPrice) * 100)
-                              ? "0"
-                              : ((tax / totalPrice) * 100).toFixed(2)
-                          }%)`}
-                        </Text>
-                        <Text className="text-black">${`${tax}`}</Text>
-                      </Pressable>
-                      <Pressable
-                        onPress={onPressGratuity}
-                        className="flex-row items-center justify-between"
-                      >
-                        <Text className="text-xl text-black">
-                          Gratuity {`(${Math.round(Gratuity * 100)}%)`}
-                        </Text>
-                        <Text className="text-blacks">
-                          ${((totalPrice + tax) * Gratuity).toFixed(2)}
-                        </Text>
-                      </Pressable>
-                    </View>
+              <>
+                {gratuityPicker || taxPicker ? (
+                  <KeyboardAvoidingView
+                    behavior="padding"
+                    className="absolute bottom-0 z-20 w-full bg-white rounded-t-3xl"
+                  >
+                    {gratuityPicker ? (
+                      <>
+                        <View className="flex-row justify-between w-full px-5 mt-5">
+                          <Text className="relative text-xl font-black text-blue-black">
+                            Total Gratuity : ${(totalPrice * gratuity).toFixed(2)}
+                          </Text>
+                          <Pressable onPress={() => setGratuityPicker(false)}>
+                            <View>
+                              <Text className="text-xl font-black">Done</Text>
+                            </View>
+                          </Pressable>
+                        </View>
+                        {pickGratuity()}
+                      </>
+                    ) : (
+                      <>
+                        <View className="flex-row justify-between w-full px-5 mt-5">
+                          <View className="flex-row">
+                            <Text className="relative text-xl font-black text-blue-black">
+                              Total Tax : $ {tax.toFixed(2)}
+                            </Text>
+                          </View>
 
-                    <TouchableOpacity
-                      className="p-3 text-4xl font-black bg-green-400 rounded-2xl "
-                      onPress={
-                        orderItems.length === 0
-                          ? () => Alert.alert("Error", "You must have at least one order items.")
-                          : () => {
-                              navigation.navigate("Contacts", {
-                                orderItems: orderItems,
-                                source: source,
-                                Gratuity: Gratuity,
-                                tax: tax,
-                                finalPrice: finalPrice,
-                                subTotal: totalPrice,
-                                VenmoUserName: VenmoUserName,
-                              });
-                            }
-                      }
-                    >
-                      <Text className="text-lg font-black text-center text-black">Validate</Text>
-                    </TouchableOpacity>
-                  </View>
-                </BottomSheetView>
-              </BottomSheet>
+                          <Pressable onPress={() => setTaxPicker(false)}>
+                            <View>
+                              <Text className="text-xl font-black">Done</Text>
+                            </View>
+                          </Pressable>
+                        </View>
+                        {pickTax()}
+                      </>
+                    )}
+                  </KeyboardAvoidingView>
+                ) : (
+                  <BottomSheet
+                    ref={sheetRef}
+                    snapPoints={["35%"]}
+                    animationConfigs={animationConfigs}
+                  >
+                    <BottomSheetView className="z-50 w-full bg-white rounded-t-3xl">
+                      <View className="px-12 mt-2">
+                        <View className="flex-row items-center justify-between ">
+                          <Text className="text-xl font-black text-black ">Total Due</Text>
+                          <Text className="text-xl font-black text-black ">
+                            ${finalPrice.toFixed(2)}
+                          </Text>
+                        </View>
+                        <View className="my-6">
+                          <View className="flex-row items-center justify-between">
+                            <Text className="w-24 font-black text-black">SubTotal</Text>
+                            <Text className="text-xl text-black">${totalPrice.toFixed(2)}</Text>
+                          </View>
+                          <Pressable
+                            onPress={() => {
+                              setTaxPicker(true);
+                            }}
+                            className="flex-row items-center justify-between"
+                          >
+                            <Text className="font-black text-black">
+                              Tax{" "}
+                              {`(${
+                                isNaN((tax / totalPrice) * 100)
+                                  ? "0"
+                                  : ((tax / totalPrice) * 100).toFixed(1)
+                              }%)`}
+                            </Text>
+                            <Text className="text-xl text-black">${`${tax.toFixed(2)}`}</Text>
+                          </Pressable>
+                          <Pressable
+                            onPress={() => setGratuityPicker(true)}
+                            className="flex-row items-center justify-between"
+                          >
+                            <Text className="font-black text-black">
+                              Gratuity {`(${Math.round(gratuity * 100).toFixed(1)}%)`}
+                            </Text>
+                            <Text className="text-xl text-blacks">
+                              ${((totalPrice + tax) * gratuity).toFixed(2)}
+                            </Text>
+                          </Pressable>
+                        </View>
+
+                        <TouchableOpacity
+                          className="p-3 text-4xl font-black bg-green-400 rounded-2xl "
+                          onPress={
+                            orderItems.length === 0
+                              ? () =>
+                                  Alert.alert("Error", "You must have at least one order items.")
+                              : () => {
+                                  navigation.navigate("Contacts", {
+                                    orderItems: orderItems,
+                                    source: source,
+                                    Gratuity: gratuity,
+                                    tax: tax,
+                                    finalPrice: finalPrice,
+                                    subTotal: totalPrice,
+                                    VenmoUserName: VenmoUserName,
+                                  });
+                                }
+                          }
+                        >
+                          <Text className="text-lg font-black text-center text-black">
+                            Validate
+                          </Text>
+                        </TouchableOpacity>
+                      </View>
+                    </BottomSheetView>
+                  </BottomSheet>
+                )}
+              </>
             )}
           </View>
         </TouchableWithoutFeedback>

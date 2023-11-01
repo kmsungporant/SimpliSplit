@@ -17,8 +17,7 @@
       "bundleIdentifier": "com.kmsungporant.SimpliSplit",
       "infoPlist": {
         "NSCameraUsageDescription": "To scan your receipt, we need access to your camera. This will allow us to capture the receipt image for processing. The image will not be stored on your device or server.",
-        "NSContactsUsageDescription": "To share your receipt via SMS, we need access to your contacts list. This will allow us to retrieve your contacts' name and phone number. The name will be used to organize and phone number will be used to send the SMS.",
-        "NSLocationAlwaysAndWhenInUseUsageDescription": "To find your sales tax rate, we need access to your location. This will allow us to retrieve your zip code to estimate your sales tax rate. You are not required to provide your location to use this app."
+        "NSContactsUsageDescription": "To share your receipt via SMS, we need access to your contacts list. This will allow us to retrieve your contacts' name and phone number. The name will be used to organize and phone number will be used to send the SMS."
       }
     },
     "android": {

@@ -15,8 +15,45 @@ export default function ContactsScreen({ navigation, route }: any) {
 
   useEffect(() => {
     getContacts();
-    Alert.alert("Note", "Contacts that don't have a phone number will not be displayed.");
   }, []);
+
+  function findUser(contacts: any, VenmoUserName: String) {
+    let found = false;
+    for (let i = 0; i < contacts.length; i++) {
+      if (contacts[i].phoneNumbers && contacts[i].phoneNumbers.length > 0) {
+        const phoneNumber = contacts[i].phoneNumbers[0];
+
+        let cleanedPhoneNumber = phoneNumber.digits;
+        if (phoneNumber.digits.startsWith("+1")) {
+          cleanedPhoneNumber = cleanedPhoneNumber.substring(2);
+        }
+
+        if (cleanedPhoneNumber === VenmoUserName) {
+          const user: PhoneContact = {
+            id: contacts[i].id,
+            firstName: contacts[i].firstName.trim(),
+            lastName: contacts[i].lastName,
+            phoneNumbers: contacts[i].phoneNumbers,
+            image: contacts[i].image,
+            imageAvailable: contacts[i].imageAvailable,
+            recordID: contacts[i].recordID,
+          };
+          setSelectedContacts([user]);
+          found = true;
+          return;
+        }
+      }
+    }
+
+    if (!found) {
+      Alert.alert(
+        "Select Your Name",
+        "Your Phone number associated with your Venmo account was not found in the list."
+      );
+    }
+
+    return null;
+  }
 
   async function getContacts() {
     const { status } = await Contacts.requestPermissionsAsync();
@@ -45,6 +82,7 @@ export default function ContactsScreen({ navigation, route }: any) {
           return 0;
         });
         setContacts(data);
+        findUser(data, VenmoUserName);
       }
     }
   }

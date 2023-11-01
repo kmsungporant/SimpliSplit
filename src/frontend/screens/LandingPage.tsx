@@ -1,6 +1,7 @@
 import { AntDesign } from "@expo/vector-icons";
 import React, { useEffect, useRef, useState } from "react";
 import {
+  Alert,
   Animated,
   FlatList,
   Keyboard,
@@ -13,6 +14,7 @@ import {
   View,
   useWindowDimensions,
 } from "react-native";
+import { set } from "react-native-reanimated";
 import OnboardingItem from "../components/MainScreen/landingPage/OnboardingItem";
 import Logo from "../components/details/Logo";
 import NavButton from "../components/details/NavButton";
@@ -66,6 +68,18 @@ export default function LandingPage({ navigation }: any) {
 
   const viewConfig = useRef({ viewAreaCoveragePercentThreshold: 50 }).current;
 
+  function onVenmoPhoneFormat(text: string) {
+    var cleaned = ("" + text).replace(/\D/g, "");
+    var match = cleaned.match(/^(1|)?(\d{3})(\d{3})(\d{4})$/);
+    if (match) {
+      var intlCode = match[1] && "" ,
+        number = [intlCode, "(", match[2], ") ", match[3], "-", match[4]].join("");
+
+      return number;
+    }
+
+    return text;
+  }
   useEffect(() => {
     const interval = setInterval(() => {
       if (slidesRef.current) {
@@ -87,32 +101,34 @@ export default function LandingPage({ navigation }: any) {
   return (
     <TouchableWithoutFeedback
       onPress={() => {
-        if (Keyboard.isVisible()) {
-          Keyboard.dismiss();
-        }
+        Keyboard.dismiss();
       }}
     >
       <SafeAreaView className="flex-1 bg-background-color">
         <Logo />
         <View className="flex-row items-end justify-between w-5/6 px-16 mt-8 gap-x-5 bg-background-color">
           <View className="w-full">
-            <Text className="text-lg font-black text-white">Venmo Username</Text>
+            <Text className="text-lg font-black text-white">{"Venmo (Phone #)"}</Text>
             <TextInput
               placeholder="Venmo Username"
-              inputMode="text"
               className="h-12 px-2 text-white border-2 border-gray-600 bg-zinc-700/50 rounded-xl "
               onChangeText={(text) => setVenmoUserName(text)}
               clearButtonMode="always"
-              value={VenmoUserName == undefined ? "" : VenmoUserName.toString()}
-              onSubmitEditing={() =>
-                navigation.navigate("Camera", { VenmoUserName: VenmoUserName })
-              }
+              value={VenmoUserName == undefined ? "" : onVenmoPhoneFormat(VenmoUserName.toString())}
+              keyboardAppearance="dark"
+              autoComplete="off"
+              keyboardType="number-pad"
+              clearTextOnFocus={true}
             />
           </View>
           <TouchableOpacity
             className="h-12 p-3 border-2 border-Primary-color bg-teal rounded-xl"
             onPress={() => {
-              navigation.navigate("Camera", { VenmoUserName: VenmoUserName });
+              if (VenmoUserName.replace(/[^0-9]/g, "").length == 10) {
+                navigation.navigate("Camera", { VenmoUserName: VenmoUserName });
+              } else {
+                Alert.alert("Invalid Phone Number!");
+              }
             }}
           >
             <AntDesign name="arrowright" size={22} color="white" />

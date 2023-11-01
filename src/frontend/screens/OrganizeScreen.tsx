@@ -16,11 +16,8 @@ import OrderItems from "../components/OrganizeScreen/OrderItems";
 import Profile from "../components/OrganizeScreen/Profile";
 import Logo from "../components/details/Logo";
 import NavButton from "../components/details/NavButton";
-import { firebase } from "../firebase";
 
 export default function OrganizeScreen({ navigation, route }: any) {
-  const db = firebase.firestore();
-  const storage = firebase.storage();
   const { width } = useWindowDimensions();
   const scrollX = useRef(new Animated.Value(0)).current;
 
@@ -95,12 +92,10 @@ export default function OrganizeScreen({ navigation, route }: any) {
           (tax / finalPrice) * total +
           (total + tax) * Gratuity
         ).toFixed(2)}\n\n`;
-        if (VenmoUserName !== "") {
-          resultString += `https://venmo.com/${VenmoUserName}?txn=pay&note=SimpliSplit&amount=${(
-            (total + tax) *
-            (1 + Gratuity)
-          ).toFixed(2)}`;
-        }
+        resultString += `https://venmo.com/${VenmoUserName}?txn=pay&note=SimpliSplit&amount=${(
+          (total + tax) *
+          (1 + Gratuity)
+        ).toFixed(2)}`;
 
         resultString += `\n--------------------------\n\n`;
       });

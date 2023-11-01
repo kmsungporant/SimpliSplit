@@ -1,7 +1,6 @@
+import { Feather } from "@expo/vector-icons";
 import { Camera } from "expo-camera";
-import * as FileSystem from "expo-file-system";
-import * as ImageManipulator from "expo-image-manipulator";
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   Alert,
   Dimensions,
@@ -13,63 +12,14 @@ import {
   TouchableOpacity,
   View,
 } from "react-native";
-import { set } from "react-native-reanimated";
 import Logo from "../components/details/Logo";
-import { firebase } from "../firebase";
 
 export default function CameraScreen({ navigation, route }: any) {
   const { VenmoUserName } = route.params;
   const [startCamera, setStartCamera] = useState<boolean>(false);
-  const absoluteBoxRef = useRef(null);
   const [image, setImage] = useState("");
   const { width, height } = Dimensions.get("window");
   let camera: Camera | null;
-
-  //   async function UploadImage(imageUpload: any) {
-  //     const response = await fetch(imageUpload);
-  //     const blob = await response.blob();
-  //     const fileName = imageUpload.substring(imageUpload.lastIndexOf("/") + 1);
-  //     const storageRef = firebase.storage().ref().child(fileName);
-
-  //     try {
-  //       const snapshot = await storageRef.put(blob);
-  //       console.log("Image uploaded successfully");
-  //     } catch (error) {
-  //       console.error("Error uploading image:", error);
-  //     }
-  //   }
-
-  // async function processImage() {
-  //   try {
-  //     const imageUri = image;
-  //     const base64Image = await convertImageToBase64(imageUri);
-  //     const response = await axios.post(`https://vision.googleapis.com/v1/images:annotate?key=AIzaSyCEs68Ejuzo6nYrRLIX5sH9PMaxkv_tuAc`, {
-  //       requests: [
-  //         {
-  //           image: { content: base64Image },
-  //           features: [{ type: "TEXT_DETECTION" }],
-  //         },
-  //       ],
-  //     });
-  //     const textAnnotations = response.data.responses[0].textAnnotations;
-  //     const text = textAnnotations[0].description;
-  //   } catch (error) {
-  //     console.error(error);
-  //   }
-  // }
-
-  // const convertImageToBase64 = async (imageUri: string) => {
-  //   try {
-  //     const response = await FileSystem.readAsStringAsync(imageUri, {
-  //       encoding: FileSystem.EncodingType.Base64,
-  //     });
-
-  //     return response;
-  //   } catch (error) {
-  //     console.error("Error converting image to Base64:", error);
-  //     throw error;
-  //   }
-  // };
 
   const openCamera = async () => {
     const { status } = await Camera.requestCameraPermissionsAsync();
@@ -153,11 +103,8 @@ export default function CameraScreen({ navigation, route }: any) {
             </View>
 
             <View className="items-center w-4/5 mb-10">
-              <TouchableOpacity
-                className="items-center w-full py-3 mb-10 border-2 border-Primary-color bg-background-color/40 rounded-3xl"
-                onPress={takePicture}
-              >
-                <Text className="text-2xl font-black text-white ">Scan</Text>
+              <TouchableOpacity className="items-center " onPress={takePicture}>
+                <Feather name="aperture" size={50} color="white" />
               </TouchableOpacity>
             </View>
           </SafeAreaView>

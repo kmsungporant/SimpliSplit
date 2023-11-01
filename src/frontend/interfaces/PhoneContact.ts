@@ -1,6 +1,6 @@
 export interface PhoneContact {
   id: string;
-  firstName?: string;
+  firstName: string;
   lastName?: string;
   phoneNumbers: { number: string }[];
   image: any;

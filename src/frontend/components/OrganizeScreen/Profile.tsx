@@ -1,4 +1,5 @@
 import { FlatList, Image, Text, View, useWindowDimensions } from "react-native";
+import { PhoneContact } from "../../interfaces/PhoneContact";
 import ProfilePic from "../details/profilePic";
 
 export default function Profile({ contact }: { contact: any }) {
@@ -15,7 +16,9 @@ export default function Profile({ contact }: { contact: any }) {
             lastLetter={contact.lastName?.charAt(0)}
           />
         )}
-        <Text className="text-3xl font-black text-white">{contact.name}</Text>
+        <Text className="text-3xl font-black text-white">
+          {contact.firstName} {contact.lastName}
+        </Text>
       </View>
 
       <View className="items-center ">

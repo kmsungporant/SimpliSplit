@@ -13,7 +13,9 @@ export default function Search({ setSearchText }: any) {
           onChangeText={(text) => setSearchText(text)}
           clearButtonMode="while-editing"
           placeholderTextColor="white"
+          keyboardAppearance="dark"
           autoCorrect={false}
+          autoComplete="off"
         />
       </View>
     </View>
