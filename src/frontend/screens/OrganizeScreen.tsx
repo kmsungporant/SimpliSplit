@@ -57,14 +57,15 @@ export default function OrganizeScreen({ navigation, route }: any) {
   async function sendSMS(): Promise<void> {
     const phoneNumbers: any[] = [];
     let resultString = "\n\n";
+    let taxPercent = tax / subTotal;
     const isAvailable: boolean = await SMS.isAvailableAsync();
 
     resultString += `SubTotal: $${subTotal}\n`;
     resultString += `Tax (${
-      isNaN((tax / finalPrice) * 100) ? "0" : ((tax / finalPrice) * 100).toFixed(2)
-    }%)\n`;
+      isNaN(taxPercent * 100) ? "0" : (taxPercent * 100).toFixed(0)
+    }%): $${tax.toFixed(2)}\n`;
 
-    resultString += `Gratuity (${Gratuity}%): $${((subTotal + tax) * Gratuity).toFixed(2)}\n`;
+    resultString += `Gratuity (${Gratuity * 100}%): $${((subTotal + tax) * Gratuity).toFixed(2)}\n`;
     resultString += `Total Due: ${finalPrice.toFixed(2)}\n\n`;
     resultString += `--------------------------\n\n`;
 
@@ -75,25 +76,28 @@ export default function OrganizeScreen({ navigation, route }: any) {
 
       finalJson.map((contact: any) => {
         let total = 0;
-        resultString += `Name: ${contact.name}\n\n`;
+        resultString += `Name: ${
+          contact.firstName + " " + (contact.lastName ? contact.lastName : "")
+        }\n\n`;
         resultString += `Items Ordered: \n`;
         contact.itemsOrdered.map((item: any) => {
-          resultString += `${item.itemName} - $${item.price}\n`;
+          resultString += `${item.itemName} - $${item.price.toFixed(2)}\n`;
           total += item.price;
         });
         resultString += `\n`;
         resultString += `Subtotal: $${total.toFixed(2)}\n`;
         resultString += `Tax (${
-          isNaN((tax / finalPrice) * 100) ? "0" : ((tax / finalPrice) * 100).toFixed(2)
-        }%): $${((tax / finalPrice) * total).toFixed(2)}\n`;
-        resultString += `Gratuity (${Gratuity}): $${((total + tax) * Gratuity).toFixed(2)}\n`;
-        resultString += `Total: $${(
-          total +
-          (tax / finalPrice) * total +
-          (total + tax) * Gratuity
-        ).toFixed(2)}\n\n`;
-        resultString += `https://venmo.com/${VenmoUserName}?txn=pay&note=SimpliSplit&amount=${(
-          (total + tax) *
+          isNaN(taxPercent * 100) ? "0" : (taxPercent * 100).toFixed(0)
+        }%): $${(taxPercent * total).toFixed(2)}\n`;
+        resultString += `Gratuity (${(Gratuity * 100).toFixed(2)}%): $${(
+          (taxPercent + 1) *
+          total *
+          Gratuity
+        ).toFixed(2)}\n`;
+        resultString += `Total: $${(total * (taxPercent + 1) * (1 + Gratuity)).toFixed(2)}\n\n`;
+        resultString += `https://venmo.com/${VenmoUserName}?txn=pay&note=&amount=${(
+          total *
+          (taxPercent + 1) *
           (1 + Gratuity)
         ).toFixed(2)}`;
 

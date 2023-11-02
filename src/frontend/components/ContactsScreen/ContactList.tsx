@@ -28,7 +28,6 @@ export default function ContactList({
         onPress={() => {
           handleContactSelect(contact);
         }}
-        className=""
       >
         <View className="flex-row items-center justify-between py-3 rounded-xl">
           <View className="w-full mx-3 ">

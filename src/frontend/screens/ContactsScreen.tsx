@@ -115,7 +115,6 @@ export default function ContactsScreen({ navigation, route }: any) {
             />
           )}
           ItemSeparatorComponent={() => <View className="h-px bg-gray-700 w-[93%] self-center" />}
-          className=""
           keyExtractor={(item) => item.id}
         />
 

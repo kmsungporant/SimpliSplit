@@ -1,7 +1,49 @@
-import { FontAwesome } from "@expo/vector-icons";
-import { Pressable, Text, TextInput, View } from "react-native";
+import { FontAwesome, MaterialCommunityIcons } from "@expo/vector-icons";
+import { Alert, Pressable, Text, TextInput, View } from "react-native";
 import { Orders } from "../../interfaces/Orders";
 
+function handleSplitItem(
+  index: number,
+  orderItems: Orders[],
+  setOrderItems: any,
+  setEditingItem: any
+) {
+  let splitNum: number = 1;
+
+  Alert.prompt(
+    "Split Item",
+    "How many times do you want to split the item?",
+    [
+      {
+        text: "Cancel",
+        style: "destructive",
+        onPress: () => {},
+      },
+      {
+        text: "OK",
+        onPress: (text: string | undefined) => {
+          if (text) {
+            splitNum = parseFloat(text);
+            let itemName = `${orderItems[index].itemName} (Split of ${splitNum})`;
+            let price = orderItems[index].price / splitNum;
+            let newItems = Array.from({ length: splitNum }, (_, i) => ({
+              itemName: itemName,
+              price: price,
+            }));
+            const updatedOrderItems = [...orderItems];
+            updatedOrderItems.splice(index, 1);
+            updatedOrderItems.splice(index, 0, ...newItems);
+            setOrderItems(updatedOrderItems);
+            setEditingItem(-1);
+          }
+        },
+      },
+    ],
+    "plain-text",
+    "",
+    "number-pad"
+  );
+}
 export default function EditItems(
   orderItems: Orders[],
   setOrderItems: any,
@@ -16,16 +58,24 @@ export default function EditItems(
     let price = currItem.price;
     return (
       <View className="w-full">
-        <Text className="m-5 text-3xl font-black text-blue-black">Change Item</Text>
-        <Pressable
-          className="absolute right-5 top-5"
-          onPress={() => {
-            handleRemoveItem(index);
-            setEditingItem(-1);
-          }}
-        >
-          <FontAwesome name="trash" size={30} />
-        </Pressable>
+        <Text className="m-5 text-3xl font-black text-black">Change Item</Text>
+        <View className="absolute flex-row right-5 top-5">
+          <Pressable
+            onPress={() => handleSplitItem(index, orderItems, setOrderItems, setEditingItem)}
+            className="mr-2"
+          >
+            <MaterialCommunityIcons name="set-split" size={30} color="black" />
+          </Pressable>
+          <Pressable
+            onPress={() => {
+              handleRemoveItem(index);
+              setEditingItem(-1);
+            }}
+          >
+            <FontAwesome name="trash" size={30} color="black" />
+          </Pressable>
+        </View>
+
         <View className="flex-row items-center justify-between px-5 mt-4">
           <Text className="text-xl font-semibold text-black">Item Name</Text>
           <TextInput

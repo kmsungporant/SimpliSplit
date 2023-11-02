@@ -96,10 +96,10 @@ export default function CameraScreen({ navigation, route }: any) {
           <SafeAreaView className="items-center justify-between h-full">
             <Logo />
             <View style={styles.box}>
-              <View className="absolute top-0 left-0 w-10 h-10 border-t-4 border-l-4 border-background-color/40"></View>
-              <View className="absolute top-0 right-0 w-10 h-10 border-t-4 border-r-4 border-background-color/40"></View>
-              <View className="absolute bottom-0 right-0 w-10 h-10 border-b-4 border-r-4 border-background-color/40"></View>
-              <View className="absolute bottom-0 left-0 w-10 h-10 border-b-4 border-l-4 border-background-color/40"></View>
+              <View className="absolute top-0 left-0 w-10 h-10 border-t-4 border-l-4 border-white/40"></View>
+              <View className="absolute top-0 right-0 w-10 h-10 border-t-4 border-r-4 border-white/40"></View>
+              <View className="absolute bottom-0 right-0 w-10 h-10 border-b-4 border-r-4 border-white/40"></View>
+              <View className="absolute bottom-0 left-0 w-10 h-10 border-b-4 border-l-4 border-white/40"></View>
             </View>
 
             <View className="items-center w-4/5 mb-10">

@@ -1,8 +1,8 @@
-import { AntDesign, FontAwesome } from "@expo/vector-icons";
+import { AntDesign } from "@expo/vector-icons";
 import BottomSheet, { BottomSheetView, useBottomSheetSpringConfigs } from "@gorhom/bottom-sheet";
 import { Picker } from "@react-native-picker/picker";
 import axios from "axios";
-import { useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import {
   ActionSheetIOS,
   ActivityIndicator,
@@ -70,7 +70,10 @@ export default function AddChargeScreen({ navigation, route }: any) {
         res.flatMap((item) => {
           const { itemName, quantity, price } = item;
           const pricePerItem = price / quantity;
-          return Array.from({ length: quantity }, () => ({ itemName, price: pricePerItem }));
+          return Array.from({ length: quantity }, () => ({
+            itemName,
+            price: pricePerItem,
+          }));
         })
       );
 
@@ -206,8 +209,8 @@ export default function AddChargeScreen({ navigation, route }: any) {
                       key={i}
                     >
                       <Text className="w-48 text-white text-md">{item.itemName} </Text>
-                      <View className="flex-row ">
-                        <Text className="text-lg font-black text-white">
+                      <View className="flex-row p-2 bg-slate-700">
+                        <Text className="font-black text-white text-md ">
                           $
                           {isNaN(item.price) || item.price === 0
                             ? (0).toFixed(2)
@@ -305,6 +308,7 @@ export default function AddChargeScreen({ navigation, route }: any) {
                                   ? "0"
                                   : ((tax / totalPrice) * 100).toFixed(1)
                               }%)`}
+                              <AntDesign name="edit" size={16} color="red" />
                             </Text>
                             <Text className="text-xl text-black">${`${tax.toFixed(2)}`}</Text>
                           </Pressable>
@@ -312,9 +316,11 @@ export default function AddChargeScreen({ navigation, route }: any) {
                             onPress={() => setGratuityPicker(true)}
                             className="flex-row items-center justify-between"
                           >
-                            <Text className="font-black text-black">
+                            <Text className="font-black text-black ">
                               Gratuity {`(${Math.round(gratuity * 100).toFixed(1)}%)`}
+                              <AntDesign name="edit" size={16} color="red" />
                             </Text>
+
                             <Text className="text-xl text-blacks">
                               ${((totalPrice + tax) * gratuity).toFixed(2)}
                             </Text>
