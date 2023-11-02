@@ -62,7 +62,7 @@ export default function EditItems(
         <View className="absolute flex-row right-5 top-5">
           <Pressable
             onPress={() => handleSplitItem(index, orderItems, setOrderItems, setEditingItem)}
-            className="mr-2"
+            className="mr-4"
           >
             <MaterialCommunityIcons name="set-split" size={30} color="black" />
           </Pressable>

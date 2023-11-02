@@ -2,7 +2,8 @@ import { AntDesign } from "@expo/vector-icons";
 import BottomSheet, { BottomSheetView, useBottomSheetSpringConfigs } from "@gorhom/bottom-sheet";
 import { Picker } from "@react-native-picker/picker";
 import axios from "axios";
-import { useCallback, useEffect, useRef, useState } from "react";
+import { default as Lottie, default as LottieView } from "lottie-react-native";
+import React, { useCallback, useEffect, useRef, useState } from "react";
 import {
   ActionSheetIOS,
   ActivityIndicator,
@@ -17,6 +18,7 @@ import {
   TouchableOpacity,
   TouchableWithoutFeedback,
   View,
+  useWindowDimensions,
 } from "react-native";
 import ItemsModal from "../components/addChargeScreen/ItemsModal";
 import Logo from "../components/details/Logo";
@@ -33,7 +35,9 @@ export default function AddChargeScreen({ navigation, route }: any) {
   const [finalPrice, setFinalPrice] = useState<number>(0);
   const [editingItem, setEditingItem] = useState<number>(-1);
   const [loading, setLoading] = useState(true);
+  const { width } = useWindowDimensions();
   const sheetRef = useRef<BottomSheet>(null);
+  const animate = useRef<Lottie>(null);
 
   async function processImage() {
     const endpoint = "https://api.mindee.net/v1/products/mindee/expense_receipts/v5/predict";
@@ -180,9 +184,18 @@ export default function AddChargeScreen({ navigation, route }: any) {
           <Logo />
           <View className="items-center justify-center h-3/5">
             <Text className="my-10 text-xl font-bold text-center text-white">
-              Processing Sales Tax and Orders...
+              Processing Your Receipt...
             </Text>
-            <ActivityIndicator size="large" />
+            <LottieView
+              autoPlay
+              ref={animate}
+              style={{
+                width: width,
+                height: width * 0.5,
+              }}
+              loop={true}
+              source={require("../assets/loading.json")}
+            />
           </View>
         </>
       ) : (
