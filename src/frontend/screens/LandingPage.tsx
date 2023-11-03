@@ -150,17 +150,15 @@ export default function LandingPage({ navigation }: any) {
                 autoComplete="off"
                 keyboardType="number-pad"
                 clearTextOnFocus={true}
+                maxLength={11}
+                
               />
             </View>
             <TouchableOpacity
               className="h-12 p-3 border-2 border-Primary-color bg-teal rounded-xl"
               onPress={() => {
-                if (VenmoUserName.replace(/[^0-9]/g, "").length == 10) {
-                  storeData(VenmoUserName.replace(/[^0-9]/g, ""));
-                  navigation.navigate("Camera", { VenmoUserName: VenmoUserName });
-                } else {
-                  Alert.alert("Invalid Phone Number!");
-                }
+                storeData(VenmoUserName.replace(/[^0-9]/g, ""));
+                navigation.navigate("Camera", { VenmoUserName: VenmoUserName });
               }}
             >
               <AntDesign name="arrowright" size={22} color="white" />
