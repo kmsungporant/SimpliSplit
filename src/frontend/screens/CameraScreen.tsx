@@ -103,7 +103,7 @@ export default function CameraScreen({ navigation, route }: any) {
             </View>
 
             <View className="items-center w-4/5 mb-10">
-              <TouchableOpacity className="items-center " onPress={takePicture}>
+              <TouchableOpacity className="items-center w-full" onPress={takePicture}>
                 <Feather name="aperture" size={50} color="white" />
               </TouchableOpacity>
             </View>

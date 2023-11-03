@@ -24,10 +24,9 @@ function handleSplitItem(
         onPress: (text: string | undefined) => {
           if (text) {
             splitNum = parseFloat(text);
-            let itemName = `${orderItems[index].itemName} (Split of ${splitNum})`;
             let price = orderItems[index].price / splitNum;
             let newItems = Array.from({ length: splitNum }, (_, i) => ({
-              itemName: itemName,
+              itemName: `${orderItems[index].itemName} (${i + 1} of ${splitNum})`,
               price: price,
             }));
             const updatedOrderItems = [...orderItems];

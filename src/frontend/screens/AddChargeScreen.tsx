@@ -27,7 +27,7 @@ import { Orders } from "../interfaces/Orders";
 export default function AddChargeScreen({ navigation, route }: any) {
   const { source, VenmoUserName } = route.params;
   const [orderItems, setOrderItems] = useState<Orders[]>([]);
-  const [gratuity, setGratuity] = useState<number>(0.18);
+  const [gratuity, setGratuity] = useState<number>(0);
   const [gratuityPicker, setGratuityPicker] = useState<boolean>(false);
   const [tax, setTax] = useState<number>(0);
   const [taxPicker, setTaxPicker] = useState<boolean>(false);
