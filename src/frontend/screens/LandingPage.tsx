@@ -1,4 +1,6 @@
 import { AntDesign } from "@expo/vector-icons";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import Checkbox from "expo-checkbox";
 import React, { useEffect, useRef, useState } from "react";
 import {
   Alert,
@@ -49,6 +51,7 @@ export const slides = [
 
 export default function LandingPage({ navigation }: any) {
   const [currentSlideIndex, setCurrentSlideIndex] = useState(0);
+  const [rememberMe, setRememberMe] = useState(false);
   const { width } = useWindowDimensions();
   const scrollX = useRef(new Animated.Value(0)).current;
   const slidesRef = useRef<any>(null);
@@ -62,6 +65,28 @@ export default function LandingPage({ navigation }: any) {
     setCurrentSlideIndex(currentIndex);
   }
 
+  async function storeData(value: string) {
+    try {
+      if (rememberMe) {
+        await AsyncStorage.setItem("userPhone", value);
+      } else {
+        await AsyncStorage.removeItem("userPhone");
+      }
+    } catch (e) {
+    }
+  }
+
+  async function getData() {
+    try {
+      const value = await AsyncStorage.getItem("userPhone");
+      if (value !== null) {
+        setVenmoUserName(value);
+        setRememberMe(true);
+      }
+    } catch (e) {
+    }
+  }
+
   const viewableItemsChanged = useRef(({ viewableItems }: any) => {
     setCurrentSlideIndex(viewableItems[0].index);
   }).current;
@@ -72,7 +97,7 @@ export default function LandingPage({ navigation }: any) {
     var cleaned = ("" + text).replace(/\D/g, "");
     var match = cleaned.match(/^(1|)?(\d{3})(\d{3})(\d{4})$/);
     if (match) {
-      var intlCode = match[1] && "" ,
+      var intlCode = match[1] && "",
         number = [intlCode, "(", match[2], ") ", match[3], "-", match[4]].join("");
 
       return number;
@@ -98,6 +123,10 @@ export default function LandingPage({ navigation }: any) {
     };
   }, [offset]);
 
+  useEffect(() => {
+    getData();
+  }, []);
+
   return (
     <TouchableWithoutFeedback
       onPress={() => {
@@ -106,34 +135,48 @@ export default function LandingPage({ navigation }: any) {
     >
       <SafeAreaView className="flex-1 bg-background-color">
         <Logo />
-        <View className="flex-row items-end justify-between w-5/6 px-16 mt-8 gap-x-5 bg-background-color">
-          <View className="w-full">
-            <Text className="text-lg font-black text-white">{"Venmo (Phone #)"}</Text>
-            <TextInput
-              placeholder="Venmo Username"
-              className="h-12 px-2 text-white border-2 border-gray-600 bg-zinc-700/50 rounded-xl "
-              onChangeText={(text) => setVenmoUserName(text)}
-              clearButtonMode="always"
-              value={VenmoUserName == undefined ? "" : onVenmoPhoneFormat(VenmoUserName.toString())}
-              keyboardAppearance="dark"
-              autoComplete="off"
-              keyboardType="number-pad"
-              clearTextOnFocus={true}
-            />
+        <View className="w-5/6 px-16">
+          <View className="flex-row items-end justify-between mt-8 gap-x-5 bg-background-color">
+            <View className="w-full">
+              <Text className="text-lg font-black text-white">{"Venmo (Phone #)"}</Text>
+              <TextInput
+                placeholder="Venmo Username"
+                className="h-12 px-2 text-white border-2 border-gray-600 bg-zinc-700/50 rounded-xl "
+                onChangeText={(text) => setVenmoUserName(text)}
+                clearButtonMode="always"
+                value={
+                  VenmoUserName == undefined ? "" : onVenmoPhoneFormat(VenmoUserName.toString())
+                }
+                keyboardAppearance="dark"
+                autoComplete="off"
+                keyboardType="number-pad"
+                clearTextOnFocus={true}
+              />
+            </View>
+            <TouchableOpacity
+              className="h-12 p-3 border-2 border-Primary-color bg-teal rounded-xl"
+              onPress={() => {
+                if (VenmoUserName.replace(/[^0-9]/g, "").length == 10) {
+                  storeData(VenmoUserName.replace(/[^0-9]/g, ""));
+                  navigation.navigate("Camera", { VenmoUserName: VenmoUserName });
+                } else {
+                  Alert.alert("Invalid Phone Number!");
+                }
+              }}
+            >
+              <AntDesign name="arrowright" size={22} color="white" />
+            </TouchableOpacity>
           </View>
-          <TouchableOpacity
-            className="h-12 p-3 border-2 border-Primary-color bg-teal rounded-xl"
-            onPress={() => {
-              if (VenmoUserName.replace(/[^0-9]/g, "").length == 10) {
-                navigation.navigate("Camera", { VenmoUserName: VenmoUserName });
-              } else {
-                Alert.alert("Invalid Phone Number!");
-              }
-            }}
-          >
-            <AntDesign name="arrowright" size={22} color="white" />
-          </TouchableOpacity>
+          <View className="flex-row items-center mt-2">
+            <Checkbox
+              value={rememberMe}
+              onValueChange={setRememberMe}
+              color={rememberMe ? "#EC625F" : undefined}
+            />
+            <Text className="ml-2 font-black text-white">Remember Me</Text>
+          </View>
         </View>
+
         <FlatList
           onMomentumScrollEnd={updateCurrentSlideIndex}
           data={slides}
