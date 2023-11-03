@@ -72,8 +72,7 @@ export default function LandingPage({ navigation }: any) {
       } else {
         await AsyncStorage.removeItem("userPhone");
       }
-    } catch (e) {
-    }
+    } catch (e) {}
   }
 
   async function getData() {
@@ -83,8 +82,7 @@ export default function LandingPage({ navigation }: any) {
         setVenmoUserName(value);
         setRememberMe(true);
       }
-    } catch (e) {
-    }
+    } catch (e) {}
   }
 
   const viewableItemsChanged = useRef(({ viewableItems }: any) => {
@@ -140,10 +138,11 @@ export default function LandingPage({ navigation }: any) {
             <View className="w-full">
               <Text className="text-lg font-black text-white">{"Venmo (Phone #)"}</Text>
               <TextInput
-                placeholder="Venmo Username"
+                placeholder="Phone Number"
                 className="h-12 px-2 text-white border-2 border-gray-600 bg-zinc-700/50 rounded-xl "
                 onChangeText={(text) => setVenmoUserName(text)}
                 clearButtonMode="always"
+                placeholderTextColor={"#18181b"}
                 value={
                   VenmoUserName == undefined ? "" : onVenmoPhoneFormat(VenmoUserName.toString())
                 }
@@ -167,14 +166,19 @@ export default function LandingPage({ navigation }: any) {
               <AntDesign name="arrowright" size={22} color="white" />
             </TouchableOpacity>
           </View>
-          <View className="flex-row items-center mt-2">
+          <TouchableOpacity
+            onPress={() => {
+              setRememberMe(!rememberMe);
+            }}
+            className="flex-row items-center mt-2"
+          >
             <Checkbox
               value={rememberMe}
               onValueChange={setRememberMe}
               color={rememberMe ? "#EC625F" : undefined}
             />
             <Text className="ml-2 font-black text-white">Remember Me</Text>
-          </View>
+          </TouchableOpacity>
         </View>
 
         <FlatList
