@@ -65,7 +65,7 @@ export default function AddChargeScreen({ navigation, route }: any) {
               ? response.data.document.inference.pages[0].prediction.line_items[i].quantity
               : 1,
         };
-        if (temp.price !== null) {
+        if (temp.price !== null || temp.price === 0) {
           res.push(temp);
         }
       }
