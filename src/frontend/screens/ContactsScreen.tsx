@@ -1,16 +1,27 @@
+import { AntDesign } from "@expo/vector-icons";
 import * as Contacts from "expo-contacts";
 import * as React from "react";
 import { useEffect, useState } from "react";
-import { Alert, FlatList, Pressable, SafeAreaView, Text, View } from "react-native";
+import {
+  Alert,
+  FlatList,
+  Keyboard,
+  Pressable,
+  SafeAreaView,
+  Text,
+  TouchableWithoutFeedback,
+  View,
+} from "react-native";
+import AddContact from "../components/ContactsScreen/AddContact";
 import ContactList from "../components/ContactsScreen/ContactList";
 import SelectionPills from "../components/ContactsScreen/SelectionPills";
 import Search from "../components/details/Search";
 import { PhoneContact } from "../interfaces/PhoneContact";
-
 export default function ContactsScreen({ navigation, route }: any) {
   const { orderItems, source, tax, Gratuity, finalPrice, subTotal, VenmoUserName } = route.params;
   const [contacts, setContacts] = useState<any>([]);
   const [searchText, setSearchText] = useState<String>("");
+  const [addContactMenu, setAddContactMenu] = useState<Boolean>(false);
   const [selectedContacts, setSelectedContacts] = useState<PhoneContact[]>([]);
 
   useEffect(() => {
@@ -97,57 +108,78 @@ export default function ContactsScreen({ navigation, route }: any) {
 
   return (
     <SafeAreaView className="flex-1 bg-background-color">
-      <View className="h-full px-3">
-        <Text className="text-4xl font-black text-white"> Contacts</Text>
-        <Search setSearchText={setSearchText} />
-        <SelectionPills
-          selectedContacts={selectedContacts}
+      {addContactMenu && (
+        <AddContact
+          setAddContactMenu={setAddContactMenu}
           setSelectedContacts={setSelectedContacts}
         />
-
-        <FlatList
-          data={filteredContacts}
-          renderItem={({ item }) => (
-            <ContactList
-              contact={item}
-              setSelectedContacts={setSelectedContacts}
-              selectedContacts={selectedContacts}
-            />
-          )}
-          ItemSeparatorComponent={() => <View className="h-px bg-gray-700 w-[93%] self-center" />}
-          keyExtractor={(item) => item.id}
-        />
-
-        <View
-          className={`absolute bottom-0 z-50 items-center self-center w-full ${
-            selectedContacts.length === 0 && "-z-50"
-          }`}
-        >
-          {selectedContacts.length > 0 && (
+      )}
+      <TouchableWithoutFeedback
+        onPress={() => {
+          Keyboard.dismiss();
+        }}
+      >
+        <View className="h-full px-3">
+          <View className="flex-row justify-between">
+            <Text className="text-4xl font-black text-white">Contacts</Text>
             <Pressable
-              className={`items-center py-3 rounded-2xl bg-green-300 w-full   ${
-                selectedContacts.length === 0 && "bg-aqua-blue/10 "
-              }`}
               onPress={() => {
-                selectedContacts.length === 0
-                  ? Alert.alert("Error", "Select at least one contact to continue.")
-                  : navigation.navigate("Organize", {
-                      orderItems: orderItems,
-                      contacts: selectedContacts,
-                      source: source,
-                      Gratuity: Gratuity,
-                      tax: tax,
-                      finalPrice: finalPrice,
-                      subTotal: subTotal,
-                      VenmoUserName: VenmoUserName,
-                    });
+                setAddContactMenu(true);
               }}
             >
-              <Text className="text-3xl font-black text-black">Continue</Text>
+              <AntDesign name="pluscircle" size={30} color="white" />
             </Pressable>
-          )}
+          </View>
+          <Search setSearchText={setSearchText} />
+          <SelectionPills
+            selectedContacts={selectedContacts}
+            setSelectedContacts={setSelectedContacts}
+          />
+
+          <FlatList
+            data={filteredContacts}
+            renderItem={({ item }) => (
+              <ContactList
+                contact={item}
+                setSelectedContacts={setSelectedContacts}
+                selectedContacts={selectedContacts}
+              />
+            )}
+            ItemSeparatorComponent={() => <View className="h-px bg-gray-700 w-[93%] self-center" />}
+            keyExtractor={(item) => item.id}
+          />
+
+          <View
+            className={`absolute bottom-0 z-50 items-center self-center w-full ${
+              selectedContacts.length === 0 && "-z-50"
+            }`}
+          >
+            {selectedContacts.length > 0 && (
+              <Pressable
+                className={`items-center py-3 rounded-2xl bg-green-300 w-full   ${
+                  selectedContacts.length === 0 && "bg-aqua-blue/10 "
+                }`}
+                onPress={() => {
+                  selectedContacts.length === 0
+                    ? Alert.alert("Error", "Select at least one contact to continue.")
+                    : navigation.navigate("Organize", {
+                        orderItems: orderItems,
+                        contacts: selectedContacts,
+                        source: source,
+                        Gratuity: Gratuity,
+                        tax: tax,
+                        finalPrice: finalPrice,
+                        subTotal: subTotal,
+                        VenmoUserName: VenmoUserName,
+                      });
+                }}
+              >
+                <Text className="text-3xl font-black text-black">Continue</Text>
+              </Pressable>
+            )}
+          </View>
         </View>
-      </View>
+      </TouchableWithoutFeedback>
     </SafeAreaView>
   );
 }

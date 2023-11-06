@@ -42,7 +42,7 @@ export default function AddChargeScreen({ navigation, route }: any) {
   async function processImage() {
     const endpoint = "https://api.mindee.net/v1/products/mindee/expense_receipts/v5/predict";
     const headers = {
-      Authorization: "Token 3eb14b2677e44a63b7ba915b2dc97768",
+      Authorization: "Token 97fb73e975e5da28213d00534e59863b",
       "Content-Type": "multipart/form-data",
     };
 

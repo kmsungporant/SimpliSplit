@@ -145,7 +145,14 @@ export default function OrganizeScreen({ navigation, route }: any) {
         <FlatList
           onMomentumScrollEnd={updateCurrentSlideIndex}
           data={finalJson}
-          renderItem={({ item }: any) => <Profile contact={item} />}
+          renderItem={({ item }: any) => (
+            <Profile
+              contactIndex={currPage}
+              contact={item}
+              setFinalJson={setFinalJson}
+              setFinalOrderItems={setFinalOrderItems}
+            />
+          )}
           horizontal
           pagingEnabled
           showsHorizontalScrollIndicator={false}

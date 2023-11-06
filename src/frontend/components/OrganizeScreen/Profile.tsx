@@ -1,9 +1,21 @@
-import { FlatList, Image, Text, View, useWindowDimensions } from "react-native";
-import { PhoneContact } from "../../interfaces/PhoneContact";
+import { FlatList, Image, Text, TouchableOpacity, View, useWindowDimensions } from "react-native";
 import ProfilePic from "../details/profilePic";
 
-export default function Profile({ contact }: { contact: any }) {
+export default function Profile({ contactIndex, contact, setFinalJson, setFinalOrderItems }: any) {
   const { width } = useWindowDimensions();
+
+  function removeItem(index: number, item: any) {
+    setFinalJson((prev: any) => {
+      const newJson = [...prev];
+      newJson[contactIndex].itemsOrdered.splice(index, 1);
+      return newJson;
+    });
+    setFinalOrderItems((prev: any) => {
+      const newOrderItems = [...prev];
+      newOrderItems.push(item);
+      return newOrderItems;
+    });
+  }
 
   return (
     <View className="items-center" style={{ width }}>
@@ -21,18 +33,25 @@ export default function Profile({ contact }: { contact: any }) {
         </Text>
       </View>
 
-      <View className="items-center ">
+      <View className="items-center flex-1 ">
         <FlatList
           data={contact.itemsOrdered}
-          renderItem={({ item }) => {
+          renderItem={({ item, index }) => {
             return (
-              <View className="flex-row justify-between mt-5 space-x-16">
-                <View className="flex-row gap-2 w-52">
+              <TouchableOpacity
+                className="flex-row justify-between mt-5 space-x-8"
+                onPress={() => removeItem(index, item)}
+              >
+                <View className="justify-center w-52">
                   <Text className="w-48 font-bold text-white">{item.itemName}</Text>
                 </View>
-
-                <Text className="text-white">${item.price.toFixed(2)}</Text>
-              </View>
+                <View className="flex-row p-2 bg-slate-700">
+                  <Text className="font-black text-white text-md ">
+                    $
+                    {isNaN(item.price) || item.price === 0 ? (0).toFixed(2) : item.price.toFixed(2)}
+                  </Text>
+                </View>
+              </TouchableOpacity>
             );
           }}
         />

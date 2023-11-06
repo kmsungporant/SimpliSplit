@@ -14,7 +14,7 @@ export default function NavButton({
   const { width } = useWindowDimensions();
   return (
     <View className="justify-between ">
-      <View className="flex-row justify-center mt-10">
+      <View className="flex-row justify-center mt-3">
         {slides.map((_, index) => {
           const inputRange = [(index - 1) * width, index * width, (index + 1) * width];
           const dotWidth = scrollX.interpolate({

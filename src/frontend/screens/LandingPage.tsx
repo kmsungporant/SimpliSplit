@@ -16,7 +16,6 @@ import {
   View,
   useWindowDimensions,
 } from "react-native";
-import { set } from "react-native-reanimated";
 import OnboardingItem from "../components/MainScreen/landingPage/OnboardingItem";
 import Logo from "../components/details/Logo";
 import NavButton from "../components/details/NavButton";
@@ -151,14 +150,17 @@ export default function LandingPage({ navigation }: any) {
                 keyboardType="number-pad"
                 clearTextOnFocus={true}
                 maxLength={11}
-                
               />
             </View>
             <TouchableOpacity
               className="h-12 p-3 border-2 border-Primary-color bg-teal rounded-xl"
               onPress={() => {
-                storeData(VenmoUserName.replace(/[^0-9]/g, ""));
-                navigation.navigate("Camera", { VenmoUserName: VenmoUserName });
+                if (VenmoUserName.length === 10) {
+                  storeData(VenmoUserName.replace(/[^0-9]/g, ""));
+                  navigation.navigate("Camera", { VenmoUserName: VenmoUserName });
+                } else {
+                  Alert.alert("Error", "Please enter a valid phone number");
+                }
               }}
             >
               <AntDesign name="arrowright" size={22} color="white" />
