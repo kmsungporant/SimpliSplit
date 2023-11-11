@@ -1,48 +1,22 @@
-# SimpliSplit
+# SimpliSplit - Scan, Split, and Settle
 
-### A new way to efficiently process bill splitting with your friends!
+**Demo Website** - [https://www.SimpliSplit.com/](https://www.simplisplit.com)
+**Join Public Beta Testing!** - [https://testflight.apple.com/join/0oryhdQ4](https://testflight.apple.com/join/0oryhdQ4)
 
-## Demo Website:
+## App Description
 
-[https://www.simplisplit.com]
+SimpliSplit is a mobile app that allows users to scan a restaurant receipt and send a payment request via text message. It makes the process of splitting the bill much easier and faster. The app is built with React Native and Expo. The backend is built with Firebase and Mindee API. The app is currently only available on iOS.
 
-## Motivation:
+## Motivation
 
-The purpose of the app is to simplify the process of splitting the bill into large groups. Instead of one person having to pay with their card and calculate individual shares, the app allows users to scan a restaurant receipt and send a payment request via text message with a single button. It eliminates the need to calculate the tax/tip individually and send Venmo/Zelle requests. Although restaurants have been allowing customers to pay separately, it makes the whole process very tedious for the employee and further complicated.
+Have you ever been in a situation where you are eating out with a large group of people and the bill comes? You are then forced to split the bill and calculate the tax and tip for each person. Then, you have to send a Venmo request to each person individually. This process is very tedious and time-consuming. SimpliSplit is an app that allows users to scan a restaurant receipt and send a payment request via text message with a single button. It eliminates the need to calculate the tax/tip individually and send Venmo/Zelle requests. Although restaurants have been allowing customers to pay separately, it makes the whole process very tedious for the employee and further complicated.
 
-## Technologies Used:
+## Technologies Used
 
-Front-end:
-<br>
-React Native (Expo Go)
-<br>
-Native Wind (Tailwindcss)
-<br>
-TypeScript
+* [React Native](https://reactnative.dev) - Frontend Framework
+* [Expo](https://expo.dev) - Development Environment
+* [Native Wind](https://www.nativewind.dev) - Styling Library
+* [Firebase](https://firebase.google.com) - Database
+* [Mindee API](https://mindee.com/) - Receipt Parsing
 
-Back-end:
-<br>
-Firebase API
-<br>
-Rapid API
-
-## Created By:
-
-Minsung Kim
-<br>
-Dan Le
-<br>
-
-## Functionally
-
-All users must sign up and have an account to access the app.
-The account will be logged in with Email and Password and will have the Venmo Username associated with the account as it is stored in the Firebase Database.
-After scanning, the user is able to take a picture (Scan) and send it to our server which will process the data and parse each order item on the following information -
-
-1. Item Name
-2. Price
-3. Quantity
-   <br>
-   The user is then asked to check if the information is correct and will be prompted to change the gratuity percentage. While the sales tax is calculated using an API, it may be sometimes inaccurate so users are still able to change the tax percentage to their needs.
-   The app will ask the user for access to the contacts (The app will not work if there is no permission). The app will fetch all the contacts within the phone and the user will then be able to select specific people.
-   Finally, the user is able to organize the order items with each contact and will send an SMS to the whole group with Venmo Request links associated with the amount due.
+## Demo Video
