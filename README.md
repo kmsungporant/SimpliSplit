@@ -22,4 +22,8 @@ Have you ever been in a situation where you are eating out with a large group of
 
 ## Demo Video
 
+https://github.com/kmsungporant/SimpliSplit/assets/69093400/7ff28253-70ed-45c8-8daf-2dd2f1bd0722
+
+
+
 
