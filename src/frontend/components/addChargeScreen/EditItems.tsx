@@ -1,4 +1,5 @@
 import { FontAwesome, MaterialCommunityIcons } from "@expo/vector-icons";
+import { BottomSheetTextInput } from "@gorhom/bottom-sheet";
 import { Alert, Pressable, Text, TextInput, View } from "react-native";
 import { Orders } from "../../interfaces/Orders";
 
@@ -56,8 +57,8 @@ export default function EditItems(
     let name = currItem.itemName;
     let price = currItem.price;
     return (
-      <View className="w-full">
-        <Text className="m-5 text-3xl font-black text-black">Change Item</Text>
+      <View className="z-50 w-full">
+        <Text className="mx-5 text-3xl font-black text-black">Change Item</Text>
         <View className="absolute flex-row right-5 top-5">
           <Pressable
             onPress={() => handleSplitItem(index, orderItems, setOrderItems, setEditingItem)}
@@ -77,8 +78,8 @@ export default function EditItems(
 
         <View className="flex-row items-center justify-between px-5 mt-4">
           <Text className="text-xl font-semibold text-black">Item Name</Text>
-          <TextInput
-            className="w-3/5 p-2 bg-gray-100 rounded-2xl"
+          <BottomSheetTextInput
+            style={{ width: "60%", padding: 8, backgroundColor: "#F3F4F6", borderRadius: 16 }}
             placeholder="Enter Item Name"
             defaultValue={name}
             onChangeText={(text) => {
@@ -93,8 +94,8 @@ export default function EditItems(
         </View>
         <View className="flex-row items-center justify-between px-5 mt-4">
           <Text className="text-xl font-semibold text-black">Item Price</Text>
-          <TextInput
-            className="w-3/5 p-2 bg-gray-100 text- rounded-2xl"
+          <BottomSheetTextInput
+            style={{ width: "60%", padding: 8, backgroundColor: "#F3F4F6", borderRadius: 16 }}
             placeholder="Enter Item Price"
             defaultValue={parseFloat(price.toString()).toFixed(2)}
             onChangeText={(text) => {

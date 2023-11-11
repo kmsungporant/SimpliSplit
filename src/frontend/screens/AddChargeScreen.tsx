@@ -1,5 +1,9 @@
 import { AntDesign } from "@expo/vector-icons";
-import BottomSheet, { BottomSheetView, useBottomSheetSpringConfigs } from "@gorhom/bottom-sheet";
+import BottomSheet, {
+  BottomSheetBackdrop,
+  BottomSheetView,
+  useBottomSheetSpringConfigs,
+} from "@gorhom/bottom-sheet";
 import { Picker } from "@react-native-picker/picker";
 import axios from "axios";
 import { default as Lottie, default as LottieView } from "lottie-react-native";
@@ -42,7 +46,7 @@ export default function AddChargeScreen({ navigation, route }: any) {
   async function processImage() {
     const endpoint = "https://api.mindee.net/v1/products/mindee/expense_receipts/v5/predict";
     const headers = {
-      Authorization: "Token 97fb73e975e5da28213d00534e59863b",
+      //       Authorization: "Token 97fb73e975e5da28213d00534e59863b",
       "Content-Type": "multipart/form-data",
     };
 
@@ -177,6 +181,11 @@ export default function AddChargeScreen({ navigation, route }: any) {
     stiffness: 500,
   });
 
+  const renderBackdrop = useCallback(
+    (props: any) => <BottomSheetBackdrop {...props} appearsOnIndex={1} disappearsOnIndex={0} />,
+    []
+  );
+
   return (
     <View className="flex-1 bg-background-color">
       {loading ? (
@@ -206,7 +215,7 @@ export default function AddChargeScreen({ navigation, route }: any) {
         >
           <View className="w-full h-full">
             <Logo />
-            <View className="z-10 flex-row self-center justify-between w-4/5 mt-6 border-b-2 border-white bg-background-color ">
+            <View className="flex-row self-center justify-between w-4/5 mt-6 border-b-2 border-white bg-background-color">
               <Text className="px-2 text-2xl font-black text-white ">Orders</Text>
               <Pressable onPress={() => setEditingItem(-2)}>
                 <AntDesign name="pluscircle" size={24} color="white" />
@@ -235,30 +244,35 @@ export default function AddChargeScreen({ navigation, route }: any) {
                 </View>
               </ScrollView>
             </View>
-
             {editingItem != -1 ? (
-              <KeyboardAvoidingView
-                behavior="padding"
-                className="absolute bottom-0 z-20 w-full bg-white rounded-t-3xl"
+              <BottomSheet
+                snapPoints={["10%", "35%"]}
+                backdropComponent={renderBackdrop}
+                animationConfigs={animationConfigs}
+                index={1}
               >
-                {ItemsModal(
-                  editingItem,
-                  orderItems,
-                  setOrderItems,
-                  setEditingItem,
-                  handleRemoveItem
-                )}
-              </KeyboardAvoidingView>
+                <BottomSheetView>
+                  {ItemsModal(
+                    editingItem,
+                    orderItems,
+                    setOrderItems,
+                    setEditingItem,
+                    handleRemoveItem
+                  )}
+                </BottomSheetView>
+              </BottomSheet>
             ) : (
-              <>
+              <BottomSheet
+                ref={sheetRef}
+                snapPoints={["10%", "35%"]}
+                animationConfigs={animationConfigs}
+                index={1}
+              >
                 {gratuityPicker || taxPicker ? (
-                  <KeyboardAvoidingView
-                    behavior="padding"
-                    className="absolute bottom-0 z-20 w-full bg-white rounded-t-3xl"
-                  >
+                  <BottomSheetView>
                     {gratuityPicker ? (
                       <>
-                        <View className="flex-row justify-between w-full px-5 mt-5">
+                        <View className="flex-row justify-between w-full px-5">
                           <Text className="relative text-xl font-black text-blue-black">
                             Total Gratuity : ${(totalPrice * gratuity).toFixed(2)}
                           </Text>
@@ -272,7 +286,7 @@ export default function AddChargeScreen({ navigation, route }: any) {
                       </>
                     ) : (
                       <>
-                        <View className="flex-row justify-between w-full px-5 mt-5">
+                        <View className="flex-row justify-between w-full px-5 ">
                           <View className="flex-row">
                             <Text className="relative text-xl font-black text-blue-black">
                               Total Tax : $ {tax.toFixed(2)}
@@ -288,86 +302,77 @@ export default function AddChargeScreen({ navigation, route }: any) {
                         {pickTax()}
                       </>
                     )}
-                  </KeyboardAvoidingView>
+                  </BottomSheetView>
                 ) : (
-                  <BottomSheet
-                    ref={sheetRef}
-                    snapPoints={["35%"]}
-                    animationConfigs={animationConfigs}
-                  >
-                    <BottomSheetView className="z-50 w-full bg-white rounded-t-3xl">
-                      <View className="px-12 mt-2">
-                        <View className="flex-row items-center justify-between ">
-                          <Text className="text-xl font-black text-black ">Total Due</Text>
-                          <Text className="text-xl font-black text-black ">
-                            ${finalPrice.toFixed(2)}
-                          </Text>
-                        </View>
-                        <View className="my-6">
-                          <View className="flex-row items-center justify-between">
-                            <Text className="w-24 font-black text-black">SubTotal</Text>
-                            <Text className="text-xl text-black">${totalPrice.toFixed(2)}</Text>
-                          </View>
-                          <Pressable
-                            onPress={() => {
-                              setTaxPicker(true);
-                            }}
-                            className="flex-row items-center justify-between"
-                          >
-                            <Text className="font-black text-black">
-                              Tax{" "}
-                              {`(${
-                                isNaN((tax / totalPrice) * 100)
-                                  ? "0"
-                                  : ((tax / totalPrice) * 100).toFixed(1)
-                              }%)`}
-                              <AntDesign name="edit" size={16} color="red" />
-                            </Text>
-                            <Text className="text-xl text-black">${`${tax.toFixed(2)}`}</Text>
-                          </Pressable>
-                          <Pressable
-                            onPress={() => setGratuityPicker(true)}
-                            className="flex-row items-center justify-between"
-                          >
-                            <Text className="font-black text-black ">
-                              Gratuity {`(${Math.round(gratuity * 100).toFixed(1)}%)`}
-                              <AntDesign name="edit" size={16} color="red" />
-                            </Text>
-
-                            <Text className="text-xl text-blacks">
-                              ${((totalPrice + tax) * gratuity).toFixed(2)}
-                            </Text>
-                          </Pressable>
-                        </View>
-
-                        <TouchableOpacity
-                          className="p-3 text-4xl font-black bg-green-400 rounded-2xl "
-                          onPress={
-                            orderItems.length === 0
-                              ? () =>
-                                  Alert.alert("Error", "You must have at least one order items.")
-                              : () => {
-                                  navigation.navigate("Contacts", {
-                                    orderItems: orderItems,
-                                    source: source,
-                                    Gratuity: gratuity,
-                                    tax: tax,
-                                    finalPrice: finalPrice,
-                                    subTotal: totalPrice,
-                                    VenmoUserName: VenmoUserName,
-                                  });
-                                }
-                          }
-                        >
-                          <Text className="text-lg font-black text-center text-black">
-                            Validate
-                          </Text>
-                        </TouchableOpacity>
+                  <BottomSheetView className="z-50 w-full bg-white rounded-t-3xl">
+                    <View className="px-12 mt-2">
+                      <View className="flex-row items-center justify-between ">
+                        <Text className="text-xl font-black text-black ">Total Due</Text>
+                        <Text className="text-xl font-black text-black ">
+                          ${finalPrice.toFixed(2)}
+                        </Text>
                       </View>
-                    </BottomSheetView>
-                  </BottomSheet>
+                      <View className="my-6">
+                        <View className="flex-row items-center justify-between">
+                          <Text className="w-24 font-black text-black">SubTotal</Text>
+                          <Text className="text-xl text-black">${totalPrice.toFixed(2)}</Text>
+                        </View>
+                        <Pressable
+                          onPress={() => {
+                            setTaxPicker(true);
+                          }}
+                          className="flex-row items-center justify-between"
+                        >
+                          <Text className="font-black text-black">
+                            Tax{" "}
+                            {`(${
+                              isNaN((tax / totalPrice) * 100)
+                                ? "0"
+                                : ((tax / totalPrice) * 100).toFixed(1)
+                            }%)`}
+                            <AntDesign name="edit" size={16} color="red" />
+                          </Text>
+                          <Text className="text-xl text-black">${`${tax.toFixed(2)}`}</Text>
+                        </Pressable>
+                        <Pressable
+                          onPress={() => setGratuityPicker(true)}
+                          className="flex-row items-center justify-between"
+                        >
+                          <Text className="font-black text-black ">
+                            Gratuity {`(${Math.round(gratuity * 100).toFixed(1)}%)`}
+                            <AntDesign name="edit" size={16} color="red" />
+                          </Text>
+
+                          <Text className="text-xl text-blacks">
+                            ${((totalPrice + tax) * gratuity).toFixed(2)}
+                          </Text>
+                        </Pressable>
+                      </View>
+
+                      <TouchableOpacity
+                        className="p-3 text-4xl font-black bg-green-400 rounded-2xl "
+                        onPress={
+                          orderItems.length === 0
+                            ? () => Alert.alert("Error", "You must have at least one order items.")
+                            : () => {
+                                navigation.navigate("Contacts", {
+                                  orderItems: orderItems,
+                                  source: source,
+                                  Gratuity: gratuity,
+                                  tax: tax,
+                                  finalPrice: finalPrice,
+                                  subTotal: totalPrice,
+                                  VenmoUserName: VenmoUserName,
+                                });
+                              }
+                        }
+                      >
+                        <Text className="text-lg font-black text-center text-black">Validate</Text>
+                      </TouchableOpacity>
+                    </View>
+                  </BottomSheetView>
                 )}
-              </>
+              </BottomSheet>
             )}
           </View>
         </TouchableWithoutFeedback>

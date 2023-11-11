@@ -1,16 +1,18 @@
+import { BottomSheetTextInput } from "@gorhom/bottom-sheet";
 import { Pressable, Text, TextInput, View } from "react-native";
 import { Orders } from "../../interfaces/Orders";
 
 export default function AddItems(setOrderItems: any, setEditingItem: any, newOrderItems: Orders[]) {
   let name = "";
   let price = 0.0;
+
   return (
-    <View className="w-full">
-      <Text className="m-5 text-3xl font-black text-blue-black">Add Item</Text>
-      <View className="flex-row items-center justify-between px-5 mt-4">
-        <Text className="text-xl font-semibold text-black">Item Name</Text>
-        <TextInput
-          className="w-3/5 p-2 bg-gray-100 rounded-2xl"
+    <View className="z-50 w-full">
+      <Text className="mx-5 text-3xl font-black text-blue-black">Add Item</Text>
+      <View className="flex-row items-center justify-between px-5">
+        <Text className="mt-4 text-xl font-semibold text-black">Item Name</Text>
+        <BottomSheetTextInput
+          style={{ width: "60%", padding: 8, backgroundColor: "#F3F4F6", borderRadius: 16 }}
           placeholder="Enter Item Name"
           keyboardAppearance="dark"
           autoCorrect={false}
@@ -24,8 +26,8 @@ export default function AddItems(setOrderItems: any, setEditingItem: any, newOrd
       </View>
       <View className="flex-row items-center justify-between px-5 mt-4">
         <Text className="text-xl font-semibold text-black">Item Price</Text>
-        <TextInput
-          className="w-3/5 p-2 bg-gray-100 text- rounded-2xl"
+        <BottomSheetTextInput
+          style={{ width: "60%", padding: 8, backgroundColor: "#F3F4F6", borderRadius: 16 }}
           placeholder="Enter Item Price"
           onChangeText={(text) => {
             price = parseFloat(text);

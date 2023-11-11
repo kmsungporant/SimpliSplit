@@ -196,6 +196,7 @@ export default function LandingPage({ navigation }: any) {
           viewabilityConfig={viewConfig}
           scrollEventThrottle={32}
           ref={slidesRef}
+          scrollEnabled={false}
           keyExtractor={(item): any => item.id}
         />
         <NavButton currentSlideIndex={currentSlideIndex} scrollX={scrollX} slides={slides} />
