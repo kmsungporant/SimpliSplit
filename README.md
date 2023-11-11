@@ -1,6 +1,7 @@
 # SimpliSplit - Scan, Split, and Settle
 
 **Demo Website** - [https://www.SimpliSplit.com/](https://www.simplisplit.com)
+
 **Join Public Beta Testing!** - [https://testflight.apple.com/join/0oryhdQ4](https://testflight.apple.com/join/0oryhdQ4)
 
 ## App Description
@@ -20,3 +21,5 @@ Have you ever been in a situation where you are eating out with a large group of
 * [Mindee API](https://mindee.com/) - Receipt Parsing
 
 ## Demo Video
+
+
