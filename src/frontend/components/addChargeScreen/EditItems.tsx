@@ -50,8 +50,7 @@ export default function EditItems(
   setEditingItem: any,
   handleRemoveItem: any,
   currItem: Orders,
-  index: number,
-  newOrderItems: Orders[]
+  index: number
 ) {
   if (orderItems.length !== 0) {
     let name = currItem.itemName;
@@ -59,7 +58,7 @@ export default function EditItems(
     return (
       <View className="z-50 w-full">
         <Text className="mx-5 text-3xl font-black text-black">Change Item</Text>
-        <View className="absolute flex-row right-5 top-5">
+        <View className="absolute flex-row right-5 ">
           <Pressable
             onPress={() => handleSplitItem(index, orderItems, setOrderItems, setEditingItem)}
             className="mr-4"
@@ -115,9 +114,9 @@ export default function EditItems(
           </Pressable>
           <Pressable
             onPress={() => {
-              newOrderItems[index].price = price || 0.0;
-              newOrderItems[index].itemName = name;
-              setOrderItems(newOrderItems);
+              orderItems[index].price = price || 0.0;
+              orderItems[index].itemName = name;
+              setOrderItems(orderItems);
               setEditingItem(-1);
             }}
             className="items-center px-12 py-4 mb-3 bg-green-400 border-black rounded-xl "

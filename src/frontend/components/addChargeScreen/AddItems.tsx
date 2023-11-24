@@ -10,7 +10,7 @@ export default function AddItems(setOrderItems: any, setEditingItem: any, newOrd
     <View className="z-50 w-full">
       <Text className="mx-5 text-3xl font-black text-blue-black">Add Item</Text>
       <View className="flex-row items-center justify-between px-5">
-        <Text className="mt-4 text-xl font-semibold text-black">Item Name</Text>
+        <Text className="mt-5 text-xl font-semibold text-black">Item Name</Text>
         <BottomSheetTextInput
           style={{ width: "60%", padding: 8, backgroundColor: "#F3F4F6", borderRadius: 16 }}
           placeholder="Enter Item Name"

@@ -38,7 +38,7 @@ export default function AddChargeScreen({ navigation, route }: any) {
   const [totalPrice, setTotalPrice] = useState<number>(0);
   const [finalPrice, setFinalPrice] = useState<number>(0);
   const [editingItem, setEditingItem] = useState<number>(-1);
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(false);
   const { width } = useWindowDimensions();
   const sheetRef = useRef<BottomSheet>(null);
   const animate = useRef<Lottie>(null);
@@ -131,7 +131,6 @@ export default function AddChargeScreen({ navigation, route }: any) {
         selectedValue={parseFloat(((tax / totalPrice) * 100).toFixed(0))}
         onValueChange={(itemValue: any) => {
           setTax(parseFloat(totalPrice * (itemValue / 100) + ""));
-          console.log((tax / totalPrice) * 100);
         }}
       >
         {pickerItems}
@@ -182,7 +181,7 @@ export default function AddChargeScreen({ navigation, route }: any) {
   });
 
   const renderBackdrop = useCallback(
-    (props: any) => <BottomSheetBackdrop {...props} appearsOnIndex={1} disappearsOnIndex={0} />,
+    (props: any) => <BottomSheetBackdrop {...props} appearsOnIndex={0} />,
     []
   );
 
@@ -213,15 +212,19 @@ export default function AddChargeScreen({ navigation, route }: any) {
             Keyboard.dismiss();
           }}
         >
-          <View className="w-full h-full">
+          <View className="w-full h-full ">
             <Logo />
-            <View className="flex-row self-center justify-between w-4/5 mt-6 border-b-2 border-white bg-background-color">
-              <Text className="px-2 text-2xl font-black text-white ">Orders</Text>
-              <Pressable onPress={() => setEditingItem(-2)}>
+            <View className="flex-row self-center justify-between w-4/5 mt-6 bg-background-color">
+              <Text className="text-2xl font-black text-white ">
+                Orders |{" "}
+                <Text className="text-sm font-semibold">Total items: {orderItems.length}</Text>
+              </Text>
+              <Pressable onPress={() => setEditingItem(-2)} className="justify-center">
                 <AntDesign name="pluscircle" size={24} color="white" />
               </Pressable>
             </View>
-            <View className="h-1/3">
+            <View className="w-4/5 h-0.5 self-center mt-2 bg-white" />
+            <View className="mt-2 h-3/5">
               <ScrollView className="px-10 gap-y-2">
                 <View className="">
                   {orderItems.map((item: any, i: number) => (
@@ -246,10 +249,15 @@ export default function AddChargeScreen({ navigation, route }: any) {
             </View>
             {editingItem != -1 ? (
               <BottomSheet
-                snapPoints={["10%", "35%"]}
+                snapPoints={["35%"]}
                 backdropComponent={renderBackdrop}
                 animationConfigs={animationConfigs}
-                index={1}
+                index={0}
+                enablePanDownToClose={true}
+                onClose={() => {
+                  setEditingItem(-1);
+                  sheetRef.current?.snapToIndex(0);
+                }}
               >
                 <BottomSheetView>
                   {ItemsModal(
@@ -266,7 +274,7 @@ export default function AddChargeScreen({ navigation, route }: any) {
                 ref={sheetRef}
                 snapPoints={["10%", "35%"]}
                 animationConfigs={animationConfigs}
-                index={1}
+                index={0}
               >
                 {gratuityPicker || taxPicker ? (
                   <BottomSheetView>
@@ -274,7 +282,7 @@ export default function AddChargeScreen({ navigation, route }: any) {
                       <>
                         <View className="flex-row justify-between w-full px-5">
                           <Text className="relative text-xl font-black text-blue-black">
-                            Total Gratuity : ${(totalPrice * gratuity).toFixed(2)}
+                            Total Gratuity : ${((totalPrice + tax) * gratuity).toFixed(2)}
                           </Text>
                           <Pressable onPress={() => setGratuityPicker(false)}>
                             <View>
@@ -312,7 +320,7 @@ export default function AddChargeScreen({ navigation, route }: any) {
                           ${finalPrice.toFixed(2)}
                         </Text>
                       </View>
-                      <View className="my-6">
+                      <View className="mt-6">
                         <View className="flex-row items-center justify-between">
                           <Text className="w-24 font-black text-black">SubTotal</Text>
                           <Text className="text-xl text-black">${totalPrice.toFixed(2)}</Text>
@@ -327,7 +335,7 @@ export default function AddChargeScreen({ navigation, route }: any) {
                             Tax{" "}
                             {`(${
                               isNaN((tax / totalPrice) * 100)
-                                ? "0"
+                                ? "0.0"
                                 : ((tax / totalPrice) * 100).toFixed(1)
                             }%)`}
                             <AntDesign name="edit" size={16} color="red" />
@@ -347,10 +355,13 @@ export default function AddChargeScreen({ navigation, route }: any) {
                             ${((totalPrice + tax) * gratuity).toFixed(2)}
                           </Text>
                         </Pressable>
+                        <Text className="self-center my-3 italic text-black/30">
+                          *Price may vary due to rounding
+                        </Text>
                       </View>
 
                       <TouchableOpacity
-                        className="p-3 text-4xl font-black bg-green-400 rounded-2xl "
+                        className="p-3 text-4xl font-black bg-green-400 rounded-2xl"
                         onPress={
                           orderItems.length === 0
                             ? () => Alert.alert("Error", "You must have at least one order items.")

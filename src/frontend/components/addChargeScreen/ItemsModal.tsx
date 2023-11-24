@@ -10,18 +10,9 @@ export default function ItemsModal(
   handleRemoveItem: any
 ) {
   const currItem = orderItems[index];
-  const newOrderItems = [...orderItems];
   if (index === -2) {
-    return AddItems(setOrderItems, setEditingItem, newOrderItems);
+    return AddItems(setOrderItems, setEditingItem, orderItems);
   } else {
-    return EditItems(
-      orderItems,
-      setOrderItems,
-      setEditingItem,
-      handleRemoveItem,
-      currItem,
-      index,
-      newOrderItems
-    );
+    return EditItems(orderItems, setOrderItems, setEditingItem, handleRemoveItem, currItem, index);
   }
 }
