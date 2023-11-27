@@ -66,7 +66,7 @@ export default function OrganizeScreen({ navigation, route }: any) {
     }%): $${tax.toFixed(2)}\n`;
 
     resultString += `Gratuity (${Gratuity * 100}%): $${((subTotal + tax) * Gratuity).toFixed(2)}\n`;
-    resultString += `Total Due: ${finalPrice.toFixed(2)}\n\n`;
+    resultString += `Total Due: $${finalPrice.toFixed(2)}\n\n`;
     resultString += `--------------------------\n\n`;
 
     if (finalJson.length !== 0 && finalJson) {
@@ -89,7 +89,7 @@ export default function OrganizeScreen({ navigation, route }: any) {
         resultString += `Tax (${
           isNaN(taxPercent * 100) ? "0" : (taxPercent * 100).toFixed(0)
         }%): $${(taxPercent * total).toFixed(2)}\n`;
-        resultString += `Gratuity (${(Gratuity * 100).toFixed(2)}%): $${(
+        resultString += `Gratuity (${Gratuity * 100}%): $${(
           (taxPercent + 1) *
           total *
           Gratuity

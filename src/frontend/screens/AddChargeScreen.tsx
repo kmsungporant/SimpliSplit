@@ -38,7 +38,7 @@ export default function AddChargeScreen({ navigation, route }: any) {
   const [totalPrice, setTotalPrice] = useState<number>(0);
   const [finalPrice, setFinalPrice] = useState<number>(0);
   const [editingItem, setEditingItem] = useState<number>(-1);
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(true);
   const { width } = useWindowDimensions();
   const sheetRef = useRef<BottomSheet>(null);
   const animate = useRef<Lottie>(null);
@@ -46,7 +46,7 @@ export default function AddChargeScreen({ navigation, route }: any) {
   async function processImage() {
     const endpoint = "https://api.mindee.net/v1/products/mindee/expense_receipts/v5/predict";
     const headers = {
-      //       Authorization: "Token 97fb73e975e5da28213d00534e59863b",
+      Authorization: "Token 3eb14b2677e44a63b7ba915b2dc97768",
       "Content-Type": "multipart/form-data",
     };
 
