@@ -174,7 +174,7 @@ export default function OrganizeScreen({ navigation, route }: any) {
             renderItem={(item) => (
               <TouchableOpacity
                 onPress={() => handlePress(item.index, item.item)}
-                className="items-center m-3 bg-gray-700 rounded-xl"
+                className="items-center m-3 bg-Black-color rounded-xl"
               >
                 <OrderItems item={item.item} />
               </TouchableOpacity>
@@ -184,21 +184,21 @@ export default function OrganizeScreen({ navigation, route }: any) {
       )}
       <View className="flex-row items-center self-center gap-2 p-4 ">
         <TouchableOpacity
-          className="items-center justify-center w-1/5 p-4 bg-white rounded-xl"
+          className="items-center justify-center w-1/5 p-4 bg-Primary-color rounded-xl"
           onPress={resetItems}
         >
-          <Fontisto name="redo" size={26} color="black" />
+          <Fontisto name="redo" size={20} color="white" />
         </TouchableOpacity>
         <View className="w-4/5">
           <Pressable
-            className="items-center py-3 bg-green-400 rounded-2xl"
+            className="items-center py-3 bg-Primary-color rounded-2xl"
             onPress={() =>
               finalOrderItems.length === 0
                 ? sendSMS()
                 : Alert.alert("Error", "Please organize all order items to continue.")
             }
           >
-            <Text className="text-3xl font-black text-black">Send</Text>
+            <Text className="text-lg font-black text-center text-white">Send</Text>
           </Pressable>
         </View>
       </View>

@@ -43,8 +43,8 @@ export default function ContactList({
                   lastLetter={contact.lastName?.charAt(0)}
                 />
               )}
-              <Text className="text-2xl text-white">
-                <Text className="font-black">{contact.firstName}</Text> {contact.lastName}
+              <Text className="text-2xl font-bold text-Primary-color">
+                {contact.firstName} {contact.lastName}
               </Text>
               <View className="ml-5 ">
                 {selectedContacts.includes(contact) && (

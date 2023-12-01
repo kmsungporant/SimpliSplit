@@ -28,7 +28,7 @@ export default function Profile({ contactIndex, contact, setFinalJson, setFinalO
             lastLetter={contact.lastName?.charAt(0)}
           />
         )}
-        <Text className="text-3xl font-black text-white">
+        <Text className="text-3xl font-black text-Primary-color">
           {contact.firstName} {contact.lastName}
         </Text>
       </View>
@@ -43,9 +43,9 @@ export default function Profile({ contactIndex, contact, setFinalJson, setFinalO
                 onPress={() => removeItem(index, item)}
               >
                 <View className="justify-center w-52">
-                  <Text className="w-48 font-bold text-white">{item.itemName}</Text>
+                  <Text className="w-48 font-bold text-Black-color">{item.itemName}</Text>
                 </View>
-                <View className="flex-row p-2 bg-slate-700">
+                <View className="flex-row p-2 bg-Primary-color">
                   <Text className="font-black text-white text-md ">
                     $
                     {isNaN(item.price) || item.price === 0 ? (0).toFixed(2) : item.price.toFixed(2)}

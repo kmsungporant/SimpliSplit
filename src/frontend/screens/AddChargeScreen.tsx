@@ -205,181 +205,174 @@ export default function AddChargeScreen({ navigation, route }: any) {
           </View>
         </>
       ) : (
-        <TouchableWithoutFeedback
-          onPress={() => {
-            Keyboard.dismiss();
-            addItemSheetRef.current?.close();
-            gratuitySheetRef.current?.close();
-            taxSheetRef.current?.close();
-            itemEditSheetRef.current?.close();
-          }}
-        >
-          <View className="w-full h-full ">
-            <Logo />
-            <View className="flex-row self-center justify-between w-4/5 mt-6 bg-background-color">
-              <Text className="text-2xl font-black text-Black-color">
-                Orders |{" "}
-                <Text className="text-sm font-semibold">Total items: {orderItems.length}</Text>
-              </Text>
-              <Pressable
-                onPress={() => addItemSheetRef.current?.expand()}
-                className="justify-center"
-              >
-                <AntDesign name="pluscircle" size={24} color="black" />
-              </Pressable>
-            </View>
-            <View className="w-5/6 h-0.5 self-center mt-2 bg-Black-color" />
-            <View className="mt-2 h-[35%]">
-              <ScrollView className="px-10 gap-y-2">
-                <View className="">
-                  {orderItems.map((item: any, i: number) => (
-                    <Pressable
-                      className="flex-row items-center justify-between my-2"
-                      onPress={() => {
-                        setEditingItem(i);
-                        itemEditSheetRef.current?.expand();
-                      }}
-                      key={i}
-                    >
-                      <Text className="w-48 font-semibold text-Black-color text-md">
-                        {item.itemName}
-                      </Text>
-                      <View className="flex-row p-2 bg-Primary-color/70">
-                        <Text className="font-black text-Black-color text-md ">
-                          $
-                          {isNaN(item.price) || item.price === 0
-                            ? (0).toFixed(2)
-                            : item.price.toFixed(2)}
-                        </Text>
-                      </View>
-                    </Pressable>
-                  ))}
-                </View>
-              </ScrollView>
-            </View>
-            <View className="w-5/6 h-0.5 self-center  bg-Black-color" />
-            <View className="px-12 mt-10">
-              <View className="flex-row items-center justify-between ">
-                <Text className="text-xl font-black text-black ">Total Due</Text>
-                <Text className="text-xl font-black text-black ">${finalPrice.toFixed(2)}</Text>
-              </View>
-              <View className="mt-6">
-                <View className="flex-row items-center justify-between">
-                  <Text className="w-24 font-black text-black">SubTotal</Text>
-                  <Text className="text-xl text-black">${totalPrice.toFixed(2)}</Text>
-                </View>
-                <Pressable
-                  onPress={() => {
-                    taxSheetRef.current?.expand();
-                  }}
-                  className="flex-row items-center justify-between"
-                >
-                  <Text className="font-black text-black">
-                    Tax{" "}
-                    {`(${
-                      isNaN((tax / totalPrice) * 100)
-                        ? "0.0"
-                        : ((tax / totalPrice) * 100).toFixed(1)
-                    }%)`}
-                    <AntDesign name="edit" size={16} color="red" />
-                  </Text>
-                  <Text className="text-xl text-black">${`${tax.toFixed(2)}`}</Text>
-                </Pressable>
-                <Pressable
-                  onPress={() => gratuitySheetRef.current?.expand()}
-                  className="flex-row items-center justify-between"
-                >
-                  <Text className="font-black text-black ">
-                    Gratuity {`(${Math.round(gratuity * 100).toFixed(1)}%)`}
-                    <AntDesign name="edit" size={16} color="red" />
-                  </Text>
-
-                  <Text className="text-xl text-blacks">
-                    ${((totalPrice + tax) * gratuity).toFixed(2)}
-                  </Text>
-                </Pressable>
-                <Text className="self-center my-3 italic text-black/30">
-                  *Price may vary due to rounding
-                </Text>
-              </View>
-
-              <TouchableOpacity
-                className="p-3 text-4xl font-black bg-green-400 rounded-2xl"
-                onPress={
-                  orderItems.length === 0
-                    ? () => Alert.alert("Error", "You must have at least one order items.")
-                    : () => {
-                        navigation.navigate("Contacts", {
-                          orderItems: orderItems,
-                          source: source,
-                          Gratuity: gratuity,
-                          tax: tax,
-                          finalPrice: finalPrice,
-                          subTotal: totalPrice,
-                          VenmoUserName: VenmoUserName,
-                        });
-                      }
-                }
-              >
-                <Text className="text-lg font-black text-center text-black">Validate</Text>
-              </TouchableOpacity>
-            </View>
-            <BottomSheet
-              snapPoints={["35%"]}
-              backdropComponent={renderBackdrop}
-              animationConfigs={animationConfigs}
-              index={-1}
-              enablePanDownToClose={true}
-              ref={gratuitySheetRef}
-            >
-              <BottomSheetView>
-                <View className="flex-row justify-between w-full px-5">
-                  <Text className="relative text-xl font-black text-blue-black">
-                    Total Gratuity : ${((totalPrice + tax) * gratuity).toFixed(2)}
-                  </Text>
-                  <Pressable onPress={() => gratuitySheetRef.current?.close()}>
-                    <View>
-                      <Text className="text-xl font-black">Done</Text>
-                    </View>
-                  </Pressable>
-                </View>
-                {pickGratuity()}
-              </BottomSheetView>
-            </BottomSheet>
-            <BottomSheet
-              snapPoints={["35%"]}
-              backdropComponent={renderBackdrop}
-              animationConfigs={animationConfigs}
-              index={-1}
-              enablePanDownToClose={true}
-              ref={taxSheetRef}
-            >
-              <BottomSheetView>
-                <View className="flex-row justify-between w-full px-5 ">
-                  <View className="flex-row">
-                    <Text className="relative text-xl font-black text-blue-black">
-                      Total Tax : $ {tax.toFixed(2)}
+        <View className="w-full h-full ">
+          <Logo />
+          <View className="flex-row self-center justify-between w-4/5 mt-6 bg-background-color">
+            <Text className="text-2xl font-black text-Black-color">
+              Orders |{" "}
+              <Text className="text-sm font-semibold">Total items: {orderItems.length}</Text>
+            </Text>
+            <Pressable onPress={() => addItemSheetRef.current?.expand()} className="justify-center">
+              <AntDesign name="pluscircle" size={24} color="black" />
+            </Pressable>
+          </View>
+          <View className="w-5/6 h-0.5 self-center mt-2 bg-Black-color" />
+          <View className="mt-2 h-[35%]">
+            <ScrollView className="px-10 gap-y-2">
+              <View className="">
+                {orderItems.map((item: any, i: number) => (
+                  <Pressable
+                    className="flex-row items-center justify-between my-2"
+                    onPress={() => {
+                      setEditingItem(i);
+                      itemEditSheetRef.current?.expand();
+                    }}
+                    key={i}
+                  >
+                    <Text className="w-48 font-semibold text-Black-color text-md">
+                      {item.itemName}
                     </Text>
-                  </View>
-
-                  <Pressable onPress={() => taxSheetRef.current?.close()}>
-                    <View>
-                      <Text className="text-xl font-black">Done</Text>
+                    <View className="flex-row p-2 bg-Primary-color/70">
+                      <Text className="font-black text-white text-md ">
+                        $
+                        {isNaN(item.price) || item.price === 0
+                          ? (0).toFixed(2)
+                          : item.price.toFixed(2)}
+                      </Text>
                     </View>
                   </Pressable>
+                ))}
+              </View>
+            </ScrollView>
+          </View>
+          <View className="w-5/6 h-0.5 self-center  bg-Black-color" />
+          <View className="px-12 mt-10">
+            <View className="flex-row items-center justify-between ">
+              <Text className="text-xl font-black text-Black-color ">Total Due</Text>
+              <Text className="text-xl font-black text-Black-color ">${finalPrice.toFixed(2)}</Text>
+            </View>
+            <View className="mt-6">
+              <View className="flex-row items-center justify-between">
+                <Text className="w-24 font-black text-Black-color">SubTotal</Text>
+                <Text className="text-xl text-Black-color">${totalPrice.toFixed(2)}</Text>
+              </View>
+              <Pressable
+                onPress={() => {
+                  taxSheetRef.current?.expand();
+                }}
+                className="flex-row items-center justify-between"
+              >
+                <Text className="font-black text-Black-color">
+                  Tax{" "}
+                  {`(${
+                    isNaN((tax / totalPrice) * 100) ? "0.0" : ((tax / totalPrice) * 100).toFixed(1)
+                  }%)`}
+                  <AntDesign name="edit" size={16} color="red" />
+                </Text>
+                <Text className="text-xl text-Black-color">${`${tax.toFixed(2)}`}</Text>
+              </Pressable>
+              <Pressable
+                onPress={() => gratuitySheetRef.current?.expand()}
+                className="flex-row items-center justify-between"
+              >
+                <Text className="font-black text-Black-color ">
+                  Gratuity {`(${Math.round(gratuity * 100).toFixed(1)}%)`}
+                  <AntDesign name="edit" size={16} color="red" />
+                </Text>
+
+                <Text className="text-xl text-Black-color">
+                  ${((totalPrice + tax) * gratuity).toFixed(2)}
+                </Text>
+              </Pressable>
+              <Text className="self-center my-3 italic text-Black-color/30">
+                *Price may vary due to rounding
+              </Text>
+            </View>
+
+            <TouchableOpacity
+              className="p-3 text-4xl font-black bg-Primary-color rounded-2xl"
+              onPress={
+                orderItems.length === 0
+                  ? () => Alert.alert("Error", "You must have at least one order items.")
+                  : () => {
+                      navigation.navigate("Contacts", {
+                        orderItems: orderItems,
+                        source: source,
+                        Gratuity: gratuity,
+                        tax: tax,
+                        finalPrice: finalPrice,
+                        subTotal: totalPrice,
+                        VenmoUserName: VenmoUserName,
+                      });
+                    }
+              }
+            >
+              <Text className="text-lg font-black text-center text-white">Validate</Text>
+            </TouchableOpacity>
+          </View>
+
+          <BottomSheet
+            snapPoints={["35%"]}
+            backdropComponent={renderBackdrop}
+            animationConfigs={animationConfigs}
+            index={-1}
+            enablePanDownToClose={true}
+            ref={gratuitySheetRef}
+          >
+            <BottomSheetView>
+              <View className="flex-row justify-between w-full px-5">
+                <Text className="relative text-xl font-black text-blue-black">
+                  Total Gratuity : ${((totalPrice + tax) * gratuity).toFixed(2)}
+                </Text>
+                <Pressable onPress={() => gratuitySheetRef.current?.close()}>
+                  <View>
+                    <Text className="text-xl font-black">Done</Text>
+                  </View>
+                </Pressable>
+              </View>
+              {pickGratuity()}
+            </BottomSheetView>
+          </BottomSheet>
+          <BottomSheet
+            snapPoints={["35%"]}
+            backdropComponent={renderBackdrop}
+            animationConfigs={animationConfigs}
+            index={-1}
+            enablePanDownToClose={true}
+            ref={taxSheetRef}
+          >
+            <BottomSheetView>
+              <View className="flex-row justify-between w-full px-5 ">
+                <View className="flex-row">
+                  <Text className="relative text-xl font-black text-blue-black">
+                    Total Tax : $ {tax.toFixed(2)}
+                  </Text>
                 </View>
-                {pickTax()}
-              </BottomSheetView>
-            </BottomSheet>
-            <BottomSheet
-              snapPoints={["35%"]}
-              backdropComponent={renderBackdrop}
-              animationConfigs={animationConfigs}
-              index={-1}
-              enablePanDownToClose={true}
-              ref={addItemSheetRef}
-              onClose={() => {
-                addItemSheetRef.current?.close();
+
+                <Pressable onPress={() => taxSheetRef.current?.close()}>
+                  <View>
+                    <Text className="text-xl font-black">Done</Text>
+                  </View>
+                </Pressable>
+              </View>
+              {pickTax()}
+            </BottomSheetView>
+          </BottomSheet>
+          <BottomSheet
+            snapPoints={["35%"]}
+            backdropComponent={renderBackdrop}
+            animationConfigs={animationConfigs}
+            index={-1}
+            enablePanDownToClose={true}
+            ref={addItemSheetRef}
+            onClose={() => {
+              addItemSheetRef.current?.close();
+            }}
+          >
+            <TouchableWithoutFeedback
+              onPress={() => {
+                Keyboard.dismiss();
+                addItemSheetRef.current?.collapse();
               }}
             >
               <BottomSheetView>
@@ -389,17 +382,23 @@ export default function AddChargeScreen({ navigation, route }: any) {
                   ref={addItemSheetRef}
                 />
               </BottomSheetView>
-            </BottomSheet>
-
-            <BottomSheet
-              snapPoints={["35%"]}
-              backdropComponent={renderBackdrop}
-              animationConfigs={animationConfigs}
-              index={-1}
-              enablePanDownToClose={true}
-              ref={itemEditSheetRef}
-              onClose={() => {
-                itemEditSheetRef.current?.close();
+            </TouchableWithoutFeedback>
+          </BottomSheet>
+          <BottomSheet
+            snapPoints={["35%"]}
+            backdropComponent={renderBackdrop}
+            animationConfigs={animationConfigs}
+            index={-1}
+            enablePanDownToClose={true}
+            ref={itemEditSheetRef}
+            onClose={() => {
+              itemEditSheetRef.current?.close();
+            }}
+          >
+            <TouchableWithoutFeedback
+              onPress={() => {
+                Keyboard.dismiss();
+                itemEditSheetRef.current?.collapse();
               }}
             >
               <BottomSheetView>
@@ -412,9 +411,9 @@ export default function AddChargeScreen({ navigation, route }: any) {
                   ref={itemEditSheetRef}
                 />
               </BottomSheetView>
-            </BottomSheet>
-          </View>
-        </TouchableWithoutFeedback>
+            </TouchableWithoutFeedback>
+          </BottomSheet>
+        </View>
       )}
     </View>
   );

@@ -21,20 +21,20 @@ export default function SelectionPills({
   }
   return (
     <View className="">
-      <ScrollView horizontal={true} className="my-2 ">
+      <ScrollView horizontal={true} className="my-2" showsHorizontalScrollIndicator={false}>
         <View className="flex-row gap-1">
           {selectedContacts.map((contact: any, i: number) => (
             <Pressable
               key={i}
-              className="flex-row items-center px-3 py-1 bg-white rounded-full"
+              className="flex-row items-center px-3 py-1 rounded-full bg-Primary-color"
               onPress={() => handleContactSelect(contact)}
             >
-              <Text className="text-sm font-black">{contact.firstName}</Text>
-              <Text className="ml-1 font-black">
+              <Text className="text-sm font-black text-white">{contact.firstName}</Text>
+              <Text className="ml-1 font-black text-white">
                 {contact.lastName?.charAt(0)}
                 {contact.lastName && "."}
               </Text>
-              <Entypo name="circle-with-cross" size={16} color="black" />
+              <Entypo name="circle-with-cross" size={16} color="white" />
             </Pressable>
           ))}
         </View>

@@ -57,9 +57,9 @@ const AddItems = forwardRef(
         <View className="flex-row justify-between px-3 py-5 ">
           <Pressable
             onPress={() => ref?.current?.close()}
-            className="items-center px-12 py-4 mb-3 bg-Primary-color border-Primary-color rounded-xl"
+            className="items-center px-12 py-4 mb-3 bg-Black-color rounded-xl"
           >
-            <Text className="text-xl font-black">Cancel</Text>
+            <Text className="text-xl font-black text-white">Cancel</Text>
           </Pressable>
           <Pressable
             onPress={() => {
@@ -69,9 +69,9 @@ const AddItems = forwardRef(
               }
               handleSubmit();
             }}
-            className="px-12 py-4 mb-3 bg-green-400 border-black rounded-xl"
+            className="px-12 py-4 mb-3 border-black bg-Primary-color rounded-xl"
           >
-            <Text className="w-20 text-xl font-black text-center">Add</Text>
+            <Text className="w-20 text-xl font-black text-center text-white">Add</Text>
           </Pressable>
         </View>
       </View>

@@ -121,13 +121,13 @@ export default function ContactsScreen({ navigation, route }: any) {
       >
         <View className="h-full px-3">
           <View className="flex-row justify-between">
-            <Text className="text-4xl font-black text-white">Contacts</Text>
+            <Text className="text-4xl font-black text-Black-color">Contacts</Text>
             <Pressable
               onPress={() => {
                 setAddContactMenu(true);
               }}
             >
-              <AntDesign name="pluscircle" size={30} color="white" />
+              <AntDesign name="pluscircle" size={30} color="#2d7092" />
             </Pressable>
           </View>
           <Search setSearchText={setSearchText} />
@@ -145,7 +145,9 @@ export default function ContactsScreen({ navigation, route }: any) {
                 selectedContacts={selectedContacts}
               />
             )}
-            ItemSeparatorComponent={() => <View className="h-px bg-gray-700 w-[93%] self-center" />}
+            ItemSeparatorComponent={() => (
+              <View className="h-px bg-Black-color w-[93%] self-center" />
+            )}
             keyExtractor={(item) => item.id}
           />
 
@@ -156,9 +158,7 @@ export default function ContactsScreen({ navigation, route }: any) {
           >
             {selectedContacts.length > 0 && (
               <Pressable
-                className={`items-center py-3 rounded-2xl bg-green-300 w-full   ${
-                  selectedContacts.length === 0 && "bg-aqua-blue/10 "
-                }`}
+                className="items-center w-full py-3 rounded-2xl bg-Primary-color "
                 onPress={() => {
                   selectedContacts.length === 0
                     ? Alert.alert("Error", "Select at least one contact to continue.")
@@ -174,7 +174,7 @@ export default function ContactsScreen({ navigation, route }: any) {
                       });
                 }}
               >
-                <Text className="text-3xl font-black text-black">Continue</Text>
+                <Text className="text-lg font-black text-center text-white">Continue</Text>
               </Pressable>
             )}
           </View>
