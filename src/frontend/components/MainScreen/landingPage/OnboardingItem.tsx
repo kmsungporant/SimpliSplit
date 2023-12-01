@@ -22,7 +22,7 @@ export default function OnboardingItem({ item }: { item: OnboardItems }) {
       />
       <View className="items-center w-full ">
         <Text className="text-3xl font-black text-center text-Primary-color ">{item.title}</Text>
-        <Text className="w-4/5 text-lg font-semibold text-center text-white">
+        <Text className="w-4/5 text-lg font-semibold text-center text-black">
           {item.description}
         </Text>
       </View>

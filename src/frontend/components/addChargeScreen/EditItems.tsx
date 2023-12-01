@@ -1,13 +1,15 @@
 import { FontAwesome, MaterialCommunityIcons } from "@expo/vector-icons";
 import { BottomSheetTextInput } from "@gorhom/bottom-sheet";
-import { Alert, Pressable, Text, TextInput, View } from "react-native";
+import { forwardRef } from "react";
+import { Alert, Keyboard, Pressable, Text, TextInput, View } from "react-native";
 import { Orders } from "../../interfaces/Orders";
 
 function handleSplitItem(
   index: number,
   orderItems: Orders[],
   setOrderItems: any,
-  setEditingItem: any
+  setEditingItem: any,
+  ref: any
 ) {
   let splitNum: number = 1;
 
@@ -43,32 +45,50 @@ function handleSplitItem(
     "",
     "number-pad"
   );
+  ref.current?.close();
 }
-export default function EditItems(
-  orderItems: Orders[],
-  setOrderItems: any,
-  setEditingItem: any,
-  handleRemoveItem: any,
-  currItem: Orders,
-  index: number
-) {
-  if (orderItems.length !== 0) {
-    let name = currItem.itemName;
-    let price = currItem.price;
+
+function handleRemoveItem(index: number, setOrderItems: any, ref: any) {
+  setOrderItems((prev: any) => {
+    const newOrderItems = [...prev];
+    newOrderItems.splice(index, 1);
+    return newOrderItems;
+  });
+  ref.current?.close();
+  Keyboard.dismiss();
+}
+const EditItems = forwardRef(
+  (
+    {
+      currItem,
+      index,
+      orderItems,
+      setOrderItems,
+      setEditingItem,
+    }: {
+      index: number;
+      currItem: Orders;
+      orderItems: Orders[];
+      setOrderItems: any;
+      setEditingItem: any;
+    },
+    ref: any
+  ) => {
+    let name = currItem?.itemName;
+    let price = currItem?.price;
     return (
       <View className="z-50 w-full">
         <Text className="mx-5 text-3xl font-black text-black">Change Item</Text>
         <View className="absolute flex-row right-5 ">
           <Pressable
-            onPress={() => handleSplitItem(index, orderItems, setOrderItems, setEditingItem)}
+            onPress={() => handleSplitItem(index, orderItems, setOrderItems, setEditingItem, ref)}
             className="mr-4"
           >
             <MaterialCommunityIcons name="set-split" size={30} color="black" />
           </Pressable>
           <Pressable
             onPress={() => {
-              handleRemoveItem(index);
-              setEditingItem(-1);
+              handleRemoveItem(index, setOrderItems, ref);
             }}
           >
             <FontAwesome name="trash" size={30} color="black" />
@@ -96,7 +116,7 @@ export default function EditItems(
           <BottomSheetTextInput
             style={{ width: "60%", padding: 8, backgroundColor: "#F3F4F6", borderRadius: 16 }}
             placeholder="Enter Item Price"
-            defaultValue={parseFloat(price.toString()).toFixed(2)}
+            defaultValue={parseFloat(price?.toString()).toFixed(2)}
             onChangeText={(text) => {
               price = parseFloat(text);
             }}
@@ -107,17 +127,21 @@ export default function EditItems(
         </View>
         <View className="flex-row justify-between px-3 my-5">
           <Pressable
-            onPress={() => setEditingItem(-1)}
+            onPress={() => {
+              ref.current?.close();
+              Keyboard.dismiss();
+            }}
             className="items-center px-12 py-4 mb-3 bg-Primary-color border-Primary-color rounded-xl"
           >
             <Text className="text-xl font-black">Cancel</Text>
           </Pressable>
           <Pressable
             onPress={() => {
-              orderItems[index].price = price || 0.0;
-              orderItems[index].itemName = name;
-              setOrderItems(orderItems);
-              setEditingItem(-1);
+              const updatedOrderItems = [...orderItems];
+              updatedOrderItems.splice(index, 1, { itemName: name, price: price });
+              setOrderItems(updatedOrderItems);
+              ref.current?.close();
+              Keyboard.dismiss();
             }}
             className="items-center px-12 py-4 mb-3 bg-green-400 border-black rounded-xl "
           >
@@ -127,4 +151,6 @@ export default function EditItems(
       </View>
     );
   }
-}
+);
+
+export default EditItems;

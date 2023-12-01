@@ -132,16 +132,16 @@ export default function LandingPage({ navigation }: any) {
     >
       <SafeAreaView className="flex-1 bg-background-color">
         <Logo />
-        <View className="w-5/6 px-16">
-          <View className="flex-row items-end justify-between mt-8 gap-x-5 bg-background-color">
-            <View className="w-full">
-              <Text className="text-lg font-black text-white">{"Venmo (Phone #)"}</Text>
+        <View className="w-5/6 px-16 ">
+          <View className="flex-row items-end justify-between mt-8 gap-x-5">
+            <View className="w-full ">
+              {/* <Text className="text-lg font-black text-Black-color">{"Venmo (Phone #)"}</Text> */}
               <TextInput
-                placeholder="Phone Number"
-                className="h-12 px-2 text-white border-2 border-gray-600 bg-zinc-700/50 rounded-xl "
+                placeholder="Venmo (Phone #)"
+                className="h-12 px-2 text-Black-color bg-zinc-700/10 rounded-xl "
                 onChangeText={(text) => setVenmoUserName(text)}
                 clearButtonMode="always"
-                placeholderTextColor={"#18181b"}
+                placeholderTextColor={"#454545"}
                 value={
                   VenmoUserName == undefined ? "" : onVenmoPhoneFormat(VenmoUserName.toString())
                 }
@@ -153,7 +153,7 @@ export default function LandingPage({ navigation }: any) {
               />
             </View>
             <TouchableOpacity
-              className="h-12 p-3 border-2 border-Primary-color bg-teal rounded-xl"
+              className="h-12 p-3 bg-Primary-color bg-teal rounded-xl"
               onPress={() => {
                 if (VenmoUserName.length === 10) {
                   storeData(VenmoUserName.replace(/[^0-9]/g, ""));
@@ -175,9 +175,10 @@ export default function LandingPage({ navigation }: any) {
             <Checkbox
               value={rememberMe}
               onValueChange={setRememberMe}
-              color={rememberMe ? "#EC625F" : undefined}
+              color={rememberMe ? "#2d7092" : undefined}
+              style={{ width: 15, height: 15 }}
             />
-            <Text className="ml-2 font-black text-white">Remember Me</Text>
+            <Text className="ml-2 font-black text-Black-color">Remember Me</Text>
           </TouchableOpacity>
         </View>
 
