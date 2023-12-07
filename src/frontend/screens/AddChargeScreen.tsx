@@ -50,9 +50,7 @@ export default function AddChargeScreen({ navigation, route }: any) {
   async function processImage() {
     const endpoint = "https://api.mindee.net/v1/products/mindee/expense_receipts/v5/predict";
     const headers = {
-      //     Authorization: "Token 3eb14b2677e44a63b7ba915b2dc97768",
-      //       Authorization: "Token 97fb73e975e5da28213d00534e59863b",
-
+      Authorization: "Token 3eb14b2677e44a63b7ba915b2dc97768",
       "Content-Type": "multipart/form-data",
     };
 
@@ -246,7 +244,7 @@ export default function AddChargeScreen({ navigation, route }: any) {
             </ScrollView>
           </View>
           <View className="w-5/6 h-0.5 self-center  bg-Black-color" />
-          <View className="px-12 mt-10">
+          <View className="px-8 mt-10">
             <View className="flex-row items-center justify-between ">
               <Text className="text-xl font-black text-Black-color ">Total Due</Text>
               <Text className="text-xl font-black text-Black-color ">${finalPrice.toFixed(2)}</Text>

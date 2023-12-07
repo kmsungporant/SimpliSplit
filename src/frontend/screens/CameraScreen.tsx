@@ -26,6 +26,7 @@ export default function CameraScreen({ navigation, route }: any) {
     if (status === "granted") {
       setStartCamera(true);
     } else {
+      navigation.navigate("LandingPage");
       Alert.alert("Access denied", "Please check your camera permissions and try again.");
     }
   };

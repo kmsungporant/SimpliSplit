@@ -1,7 +1,11 @@
 import { AntDesign } from "@expo/vector-icons";
+import BottomSheet, {
+  BottomSheetBackdrop,
+  BottomSheetView,
+  useBottomSheetSpringConfigs,
+} from "@gorhom/bottom-sheet";
 import * as Contacts from "expo-contacts";
-import * as React from "react";
-import { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useRef, useState } from "react";
 import {
   Alert,
   FlatList,
@@ -15,6 +19,7 @@ import {
 import AddContact from "../components/ContactsScreen/AddContact";
 import ContactList from "../components/ContactsScreen/ContactList";
 import SelectionPills from "../components/ContactsScreen/SelectionPills";
+import AddItems from "../components/addChargeScreen/AddItems";
 import Search from "../components/details/Search";
 import { PhoneContact } from "../interfaces/PhoneContact";
 export default function ContactsScreen({ navigation, route }: any) {
@@ -23,6 +28,18 @@ export default function ContactsScreen({ navigation, route }: any) {
   const [searchText, setSearchText] = useState<String>("");
   const [addContactMenu, setAddContactMenu] = useState<Boolean>(false);
   const [selectedContacts, setSelectedContacts] = useState<PhoneContact[]>([]);
+  const contactSheetRef = useRef<BottomSheet>(null);
+
+  const renderBackdrop = useCallback(
+    (props: any) => <BottomSheetBackdrop {...props} appearsOnIndex={0} />,
+    []
+  );
+  const animationConfigs = useBottomSheetSpringConfigs({
+    damping: 80,
+    restDisplacementThreshold: 0.1,
+    restSpeedThreshold: 0.1,
+    stiffness: 500,
+  });
 
   useEffect(() => {
     getContacts();
@@ -108,12 +125,6 @@ export default function ContactsScreen({ navigation, route }: any) {
 
   return (
     <SafeAreaView className="flex-1 bg-background-color">
-      {addContactMenu && (
-        <AddContact
-          setAddContactMenu={setAddContactMenu}
-          setSelectedContacts={setSelectedContacts}
-        />
-      )}
       <TouchableWithoutFeedback
         onPress={() => {
           Keyboard.dismiss();
@@ -124,7 +135,7 @@ export default function ContactsScreen({ navigation, route }: any) {
             <Text className="text-4xl font-black text-Black-color">Contacts</Text>
             <Pressable
               onPress={() => {
-                setAddContactMenu(true);
+                contactSheetRef.current?.expand();
               }}
             >
               <AntDesign name="pluscircle" size={30} color="#2d7092" />
@@ -180,6 +191,33 @@ export default function ContactsScreen({ navigation, route }: any) {
           </View>
         </View>
       </TouchableWithoutFeedback>
+
+      <BottomSheet
+        snapPoints={["35%"]}
+        backdropComponent={renderBackdrop}
+        animationConfigs={animationConfigs}
+        index={-1}
+        enablePanDownToClose={true}
+        ref={contactSheetRef}
+        onClose={() => {
+          contactSheetRef.current?.close();
+        }}
+      >
+        <TouchableWithoutFeedback
+          onPress={() => {
+            Keyboard.dismiss();
+            contactSheetRef.current?.collapse();
+          }}
+        >
+          <BottomSheetView>
+            <AddContact
+              setAddContactMenu={setAddContactMenu}
+              setSelectedContacts={setSelectedContacts}
+              ref={contactSheetRef}
+            />
+          </BottomSheetView>
+        </TouchableWithoutFeedback>
+      </BottomSheet>
     </SafeAreaView>
   );
 }

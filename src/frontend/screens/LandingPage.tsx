@@ -125,83 +125,72 @@ export default function LandingPage({ navigation }: any) {
   }, []);
 
   return (
-    <TouchableWithoutFeedback
-      onPress={() => {
-        Keyboard.dismiss();
-      }}
-    >
-      <SafeAreaView className="flex-1 bg-background-color">
-        <Logo />
-        <View className="w-5/6 px-16 ">
-          <View className="flex-row items-end justify-between mt-8 gap-x-5">
-            <View className="w-full ">
-              {/* <Text className="text-lg font-black text-Black-color">{"Venmo (Phone #)"}</Text> */}
-              <TextInput
-                placeholder="Venmo (Phone #)"
-                className="h-12 px-2 text-Black-color bg-zinc-700/10 rounded-xl "
-                onChangeText={(text) => setVenmoUserName(text)}
-                clearButtonMode="always"
-                placeholderTextColor={"#454545"}
-                value={
-                  VenmoUserName == undefined ? "" : onVenmoPhoneFormat(VenmoUserName.toString())
-                }
-                keyboardAppearance="dark"
-                autoComplete="off"
-                keyboardType="number-pad"
-                clearTextOnFocus={true}
-                maxLength={11}
-              />
-            </View>
-            <TouchableOpacity
-              className="h-12 p-3 bg-Primary-color bg-teal rounded-xl"
-              onPress={() => {
-                if (VenmoUserName.length === 10) {
-                  storeData(VenmoUserName.replace(/[^0-9]/g, ""));
-                  navigation.navigate("Camera", { VenmoUserName: VenmoUserName });
-                } else {
-                  Alert.alert("Error", "Please enter a valid phone number");
-                }
-              }}
-            >
-              <AntDesign name="arrowright" size={22} color="white" />
-            </TouchableOpacity>
+    <SafeAreaView className="flex-1 bg-background-color">
+      <Logo />
+      <View className="w-5/6 px-16 ">
+        <View className="flex-row items-end justify-between mt-8 gap-x-5">
+          <View className="w-full ">
+            <TextInput
+              placeholder="Venmo (Phone #)"
+              className="h-12 px-2 text-Black-color bg-zinc-700/10 rounded-xl "
+              onChangeText={(text) => setVenmoUserName(text)}
+              clearButtonMode="always"
+              placeholderTextColor={"#454545"}
+              value={VenmoUserName == undefined ? "" : onVenmoPhoneFormat(VenmoUserName.toString())}
+              keyboardAppearance="dark"
+              autoComplete="off"
+              keyboardType="number-pad"
+              clearTextOnFocus={true}
+              maxLength={11}
+            />
           </View>
           <TouchableOpacity
+            className="h-12 p-3 bg-Primary-color bg-teal rounded-xl"
             onPress={() => {
-              setRememberMe(!rememberMe);
+              if (VenmoUserName.length === 10) {
+                storeData(VenmoUserName.replace(/[^0-9]/g, ""));
+                navigation.navigate("Camera", { VenmoUserName: VenmoUserName });
+              } else {
+                Alert.alert("Error", "Please enter a valid phone number");
+              }
             }}
-            className="flex-row items-center mt-2"
           >
-            <Checkbox
-              value={rememberMe}
-              onValueChange={setRememberMe}
-              color={rememberMe ? "#2d7092" : undefined}
-              style={{ width: 15, height: 15 }}
-            />
-            <Text className="ml-2 font-black text-Black-color">Remember Me</Text>
+            <AntDesign name="arrowright" size={22} color="white" />
           </TouchableOpacity>
         </View>
-
-        <FlatList
-          onMomentumScrollEnd={updateCurrentSlideIndex}
-          data={slides}
-          renderItem={({ item }) => <OnboardingItem item={item} />}
-          horizontal
-          pagingEnabled
-          showsHorizontalScrollIndicator={false}
-          bounces={false}
-          onScroll={Animated.event([{ nativeEvent: { contentOffset: { x: scrollX } } }], {
-            useNativeDriver: false,
-          })}
-          onViewableItemsChanged={viewableItemsChanged}
-          viewabilityConfig={viewConfig}
-          scrollEventThrottle={32}
-          ref={slidesRef}
-          scrollEnabled={false}
-          keyExtractor={(item): any => item.id}
-        />
-        <NavButton currentSlideIndex={currentSlideIndex} scrollX={scrollX} slides={slides} />
-      </SafeAreaView>
-    </TouchableWithoutFeedback>
+        <TouchableOpacity
+          onPress={() => {
+            setRememberMe(!rememberMe);
+          }}
+          className="flex-row items-center mt-2"
+        >
+          <Checkbox
+            value={rememberMe}
+            onValueChange={setRememberMe}
+            color={rememberMe ? "#2d7092" : undefined}
+            style={{ width: 15, height: 15 }}
+          />
+          <Text className="ml-2 font-black text-Black-color">Remember Me</Text>
+        </TouchableOpacity>
+      </View>
+      <FlatList
+        onMomentumScrollEnd={updateCurrentSlideIndex}
+        data={slides}
+        renderItem={({ item }) => <OnboardingItem item={item} />}
+        horizontal
+        pagingEnabled
+        showsHorizontalScrollIndicator={false}
+        bounces={false}
+        onScroll={Animated.event([{ nativeEvent: { contentOffset: { x: scrollX } } }], {
+          useNativeDriver: false,
+        })}
+        onViewableItemsChanged={viewableItemsChanged}
+        viewabilityConfig={viewConfig}
+        scrollEventThrottle={32}
+        ref={slidesRef}
+        keyExtractor={(item): any => item.id}
+      />
+      <NavButton currentSlideIndex={currentSlideIndex} scrollX={scrollX} slides={slides} />
+    </SafeAreaView>
   );
 }

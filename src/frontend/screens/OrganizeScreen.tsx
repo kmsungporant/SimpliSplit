@@ -115,7 +115,7 @@ export default function OrganizeScreen({ navigation, route }: any) {
           },
         });
         if (result == "sent") {
-          navigation.navigate("LandingPage", { VenmoUserName: VenmoUserName });
+          navigation.navigate("LandingPage");
         }
       } catch (error) {
         console.log(error);
