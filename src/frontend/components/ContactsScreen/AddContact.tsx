@@ -1,5 +1,5 @@
 import { BottomSheetTextInput } from "@gorhom/bottom-sheet";
-import { forwardRef, useEffect, useState } from "react";
+import { forwardRef, useEffect, useRef, useState } from "react";
 import {
   Alert,
   Keyboard,
@@ -22,6 +22,8 @@ const AddContact = forwardRef(
     const [firstName, setFirstName] = useState<String>("");
     const [lastName, setLastName] = useState<String>("");
     const [Phone, setPhone] = useState<String>("");
+    const phoneTextBoxRef = useRef<any>(null);
+    const nameTextBoxRef = useRef<any>(null);
 
     function handleSubmit() {
       const newContact = {
@@ -36,11 +38,8 @@ const AddContact = forwardRef(
       if (newContact.phoneNumbers[0].number.length === 10) {
         setSelectedContacts((prev: PhoneContact[]) => [...prev, newContact]);
         setAddContactMenu(false);
-        setFirstName("");
-        setLastName("");
-        setPhone("");
         Keyboard.dismiss();
-        ref.current.close();
+        ref?.current?.close();
       } else {
         Alert.alert("Invalid Phone Number", "Please enter a valid phone number");
       }
@@ -58,6 +57,11 @@ const AddContact = forwardRef(
 
       return text;
     }
+
+    useEffect(() => {
+      phoneTextBoxRef.current?.clear();
+      nameTextBoxRef.current?.clear();
+    }, [ref?.current?.close]);
 
     return (
       <View className="z-50 w-full">
@@ -77,7 +81,6 @@ const AddContact = forwardRef(
             autoComplete="off"
             clearButtonMode="always"
             autoCapitalize="sentences"
-            placeholderTextColor={"#18181b"}
             onChangeText={(text) => {
               const nameArray = text.split(" ");
               if (nameArray.length > 1) {
@@ -87,6 +90,7 @@ const AddContact = forwardRef(
                 setFirstName(nameArray[0]);
               }
             }}
+            ref={nameTextBoxRef}
           />
         </View>
         <View className="flex-row items-center justify-between px-5 mt-4">
@@ -101,13 +105,13 @@ const AddContact = forwardRef(
             }}
             onChangeText={(text) => setPhone(text)}
             clearButtonMode="always"
-            placeholderTextColor={"#18181b"}
             value={Phone == undefined ? "" : onVenmoPhoneFormat(Phone.toString())}
             keyboardAppearance="dark"
             autoComplete="off"
             keyboardType="number-pad"
             clearTextOnFocus={true}
             maxLength={11}
+            ref={phoneTextBoxRef}
           />
         </View>
         <View className="flex-row justify-between px-3 py-5 ">

@@ -9,16 +9,11 @@ import axios from "axios";
 import { default as Lottie, default as LottieView } from "lottie-react-native";
 import React, { useCallback, useEffect, useRef, useState } from "react";
 import {
-  ActionSheetIOS,
-  ActivityIndicator,
   Alert,
-  Button,
   Keyboard,
-  KeyboardAvoidingView,
   Pressable,
   ScrollView,
   Text,
-  TextInput,
   TouchableOpacity,
   TouchableWithoutFeedback,
   View,
@@ -33,24 +28,34 @@ export default function AddChargeScreen({ navigation, route }: any) {
   const { source, VenmoUserName } = route.params;
   const [orderItems, setOrderItems] = useState<Orders[]>([]);
   const [gratuity, setGratuity] = useState<number>(0);
-  const [gratuityPicker, setGratuityPicker] = useState<boolean>(false);
+  const [gratuityPercentage, setGratuityPercentage] = useState<number>(0);
   const [tax, setTax] = useState<number>(0);
-  const [taxPicker, setTaxPicker] = useState<boolean>(false);
+  const [taxPercentage, setTaxPercentage] = useState<number>(0);
   const [totalPrice, setTotalPrice] = useState<number>(0);
   const [finalPrice, setFinalPrice] = useState<number>(0);
   const [editingItem, setEditingItem] = useState<number>(-1);
   const [loading, setLoading] = useState(true);
+  const [indexOfLoading, setIndexOfLoading] = useState(0);
   const { width } = useWindowDimensions();
   const gratuitySheetRef = useRef<BottomSheet>(null);
   const taxSheetRef = useRef<BottomSheet>(null);
   const itemEditSheetRef = useRef<BottomSheet>(null);
   const addItemSheetRef = useRef<BottomSheet>(null);
   const animate = useRef<Lottie>(null);
+  const texts = [
+    ["Processing Your Receipt...", "Please hold on, we're carefully scanning each detail."],
+    [
+      "Experiencing a slow connection...",
+      "Don't worry, we're still actively processing your receipt. This may take a bit longer than usual.",
+    ],
+  ];
 
   async function processImage() {
+    let price = 0;
     const endpoint = "https://api.mindee.net/v1/products/mindee/expense_receipts/v5/predict";
     const headers = {
-      Authorization: "Token 3eb14b2677e44a63b7ba915b2dc97768",
+      //       Authorization: "Token 3eb14b2677e44a63b7ba915b2dc97768",
+      Authorization: "Token 97fb73e975e5da28213d00534e59863b",
       "Content-Type": "multipart/form-data",
     };
 
@@ -58,6 +63,9 @@ export default function AddChargeScreen({ navigation, route }: any) {
     data.append("document", { uri: source, name: "receipt.jpg", type: "image/jpeg" });
 
     try {
+      setInterval(() => {
+        setIndexOfLoading(1);
+      }, 10000);
       const response = await axios.post(endpoint, data, { headers });
       let res = [];
       for (
@@ -75,6 +83,7 @@ export default function AddChargeScreen({ navigation, route }: any) {
         };
         if (temp.price !== null && temp.price !== 0) {
           res.push(temp);
+          price += temp.price;
         }
       }
 
@@ -94,19 +103,20 @@ export default function AddChargeScreen({ navigation, route }: any) {
         taxRes += response.data.document.inference.pages[0].prediction.taxes[i].value;
       }
 
-      setTax(taxRes);
       if (isNaN(taxRes)) {
         setTax(0);
+      } else {
+        setTax(taxRes);
       }
+      setTaxPercentage(parseFloat(((taxRes / price) * 100).toFixed(0)));
 
       if (res.length === 0) {
         Alert.alert("No Items Found", "Please manually enter the items.");
       }
-
-      setFinalPrice((totalPrice + tax) * (1 + gratuity));
     } catch (error) {
       console.log("Failed");
     }
+
     setLoading(false);
   }
 
@@ -117,8 +127,10 @@ export default function AddChargeScreen({ navigation, route }: any) {
     }
     return (
       <Picker
-        selectedValue={gratuity * 100}
-        onValueChange={(itemValue) => setGratuity(itemValue / 100)}
+        selectedValue={gratuityPercentage}
+        onValueChange={(itemValue) => {
+          setGratuityPercentage(itemValue);
+        }}
       >
         {pickerItems}
       </Picker>
@@ -132,9 +144,9 @@ export default function AddChargeScreen({ navigation, route }: any) {
     }
     return (
       <Picker
-        selectedValue={parseFloat(((tax / totalPrice) * 100).toFixed(0))}
+        selectedValue={taxPercentage}
         onValueChange={(itemValue: any) => {
-          setTax(parseFloat(totalPrice * (itemValue / 100) + ""));
+          setTaxPercentage(itemValue);
         }}
       >
         {pickerItems}
@@ -151,23 +163,27 @@ export default function AddChargeScreen({ navigation, route }: any) {
   }, []);
 
   useEffect(() => {
-    setTotalPrice(
-      parseFloat(
-        orderItems
-          .reduce((acc: number, curr: any) => {
-            return acc + curr.price;
-          }, 0)
-          .toFixed(2)
-      )
+    const subPrice = parseFloat(
+      orderItems
+        .reduce((acc: number, curr: any) => {
+          return acc + curr.price;
+        }, 0)
+        .toFixed(2)
     );
-  }, [orderItems, editingItem]);
+    const taxTotal = subPrice * (taxPercentage / 100);
+    const gratuityTotal = (taxTotal + subPrice) * (gratuityPercentage / 100);
+    const totalOfAll = taxTotal + gratuityTotal + subPrice;
 
-  useEffect(() => {
-    setFinalPrice((totalPrice + tax) * (1 + gratuity));
-    if (orderItems.length === 0) {
+    setTotalPrice(subPrice);
+    setFinalPrice(totalOfAll);
+    if (subPrice === 0) {
       setTax(0);
+      setGratuity(0);
+    } else {
+      setTax(taxTotal);
+      setGratuity(gratuityTotal);
     }
-  }, [gratuity, tax, totalPrice, editingItem]);
+  }, [orderItems, gratuityPercentage, taxPercentage]);
 
   const animationConfigs = useBottomSheetSpringConfigs({
     damping: 80,
@@ -184,11 +200,11 @@ export default function AddChargeScreen({ navigation, route }: any) {
   return (
     <View className="flex-1 bg-background-color">
       {loading ? (
-        <>
+        <View className="w-full h-full mt-8">
           <Logo />
-          <View className="items-center justify-center h-3/5">
-            <Text className="my-10 text-xl font-bold text-center text-Black-color">
-              Processing Your Receipt...
+          <View className="items-center justify-center h-4/5">
+            <Text className=" text-lg font-black text-center text-Primary-color w-4/5">
+              {texts[indexOfLoading][0]}
             </Text>
             <LottieView
               autoPlay
@@ -200,12 +216,13 @@ export default function AddChargeScreen({ navigation, route }: any) {
               loop={true}
               source={require("../assets/loading.json")}
             />
+            <Text className="w-3/5 text-center h-24"> {texts[indexOfLoading][1]}</Text>
           </View>
-        </>
+        </View>
       ) : (
-        <View className="w-full h-full ">
+        <View className="w-full h-full mt-8">
           <Logo />
-          <View className="flex-row self-center justify-between w-4/5 mt-6 bg-background-color">
+          <View className="flex-row justify-between mx-8 mt-6 bg-background-color">
             <Text className="text-2xl font-black text-Black-color">
               Orders |{" "}
               <Text className="text-sm font-semibold">Total items: {orderItems.length}</Text>
@@ -261,10 +278,7 @@ export default function AddChargeScreen({ navigation, route }: any) {
                 className="flex-row items-center justify-between"
               >
                 <Text className="font-black text-Black-color">
-                  Tax{" "}
-                  {`(${
-                    isNaN((tax / totalPrice) * 100) ? "0.0" : ((tax / totalPrice) * 100).toFixed(1)
-                  }%)`}
+                  Tax {`(${taxPercentage}%)`}
                   <AntDesign name="edit" size={16} color="red" />
                 </Text>
                 <Text className="text-xl text-Black-color">${`${tax.toFixed(2)}`}</Text>
@@ -274,13 +288,11 @@ export default function AddChargeScreen({ navigation, route }: any) {
                 className="flex-row items-center justify-between"
               >
                 <Text className="font-black text-Black-color ">
-                  Gratuity {`(${Math.round(gratuity * 100).toFixed(1)}%)`}
+                  Gratuity {`(${gratuityPercentage}%)`}
                   <AntDesign name="edit" size={16} color="red" />
                 </Text>
 
-                <Text className="text-xl text-Black-color">
-                  ${((totalPrice + tax) * gratuity).toFixed(2)}
-                </Text>
+                <Text className="text-xl text-Black-color">${gratuity.toFixed(2)}</Text>
               </Pressable>
               <Text className="self-center my-3 italic text-Black-color/30">
                 *Price may vary due to rounding
@@ -320,7 +332,7 @@ export default function AddChargeScreen({ navigation, route }: any) {
             <BottomSheetView>
               <View className="flex-row justify-between w-full px-5">
                 <Text className="relative text-xl font-black text-blue-black">
-                  Total Gratuity : ${((totalPrice + tax) * gratuity).toFixed(2)}
+                  Total Gratuity : ${gratuity.toFixed(2)}
                 </Text>
                 <Pressable onPress={() => gratuitySheetRef.current?.close()}>
                   <View>
