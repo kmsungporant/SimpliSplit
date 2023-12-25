@@ -1,4 +1,4 @@
-import { AntDesign } from "@expo/vector-icons";
+import { AntDesign, Octicons } from "@expo/vector-icons";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import Checkbox from "expo-checkbox";
 import React, { useEffect, useRef, useState } from "react";
@@ -191,6 +191,9 @@ export default function LandingPage({ navigation }: any) {
         keyExtractor={(item): any => item.id}
       />
       <NavButton currentSlideIndex={currentSlideIndex} scrollX={scrollX} slides={slides} />
+      <TouchableOpacity className="absolute bottom-7 right-7">
+        <Octicons name="question" size={30} color="#2d7092" />
+      </TouchableOpacity>
     </SafeAreaView>
   );
 }

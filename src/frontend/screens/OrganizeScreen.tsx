@@ -96,11 +96,11 @@ export default function OrganizeScreen({ navigation, route }: any) {
         }%): $${taxTotal.toFixed(2)}\n`;
         resultString += `Gratuity (${gratuityPercent}%): $${gratuityTotal.toFixed(2)}\n`;
         resultString += `Total: $${(total + taxTotal + gratuityTotal).toFixed(2)}\n\n`;
-        resultString += `https://venmo.com/${VenmoUserName}?txn=pay&note=&amount=${(
-          total *
-          (taxPercent + 1) *
-          (1 + Gratuity)
-        ).toFixed(2)}`;
+        resultString += `https://account.venmo.com/payment-link?audience=friends&amount=${(
+          total +
+          taxTotal +
+          gratuityTotal
+        ).toFixed(2)}&note=Powered%20By%20SimpliSplit&recipients=%2C${VenmoUserName}&txn=pay`;
 
         resultString += `\n--------------------------\n\n`;
       });
