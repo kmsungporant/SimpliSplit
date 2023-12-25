@@ -54,8 +54,8 @@ export default function AddChargeScreen({ navigation, route }: any) {
     let price = 0;
     const endpoint = "https://api.mindee.net/v1/products/mindee/expense_receipts/v5/predict";
     const headers = {
-      Authorization: "Token 3eb14b2677e44a63b7ba915b2dc97768",
-      //       Authorization: "Token 97fb73e975e5da28213d00534e59863b",
+      //       Authorization: "Token 3eb14b2677e44a63b7ba915b2dc97768",
+      Authorization: "Token 97fb73e975e5da28213d00534e59863b",
       "Content-Type": "multipart/form-data",
     };
 
@@ -203,7 +203,7 @@ export default function AddChargeScreen({ navigation, route }: any) {
         <View className="w-full h-full mt-8">
           <Logo />
           <View className="items-center justify-center h-4/5">
-            <Text className=" text-lg font-black text-center text-Primary-color w-4/5">
+            <Text className="w-4/5 text-lg font-black text-center text-Primary-color">
               {texts[indexOfLoading][0]}
             </Text>
             <LottieView
@@ -216,7 +216,7 @@ export default function AddChargeScreen({ navigation, route }: any) {
               loop={true}
               source={require("../assets/loading.json")}
             />
-            <Text className="w-3/5 text-center h-24"> {texts[indexOfLoading][1]}</Text>
+            <Text className="w-3/5 h-24 text-center"> {texts[indexOfLoading][1]}</Text>
           </View>
         </View>
       ) : (

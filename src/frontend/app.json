@@ -17,7 +17,8 @@
       "bundleIdentifier": "com.kmsungporant.SimpliSplit",
       "infoPlist": {
         "NSCameraUsageDescription": "To scan your receipt, we need access to your camera. This will allow us to capture the receipt image for processing. The image will not be stored on your device or server.",
-        "NSContactsUsageDescription": "To share your receipt via SMS, we need access to your contacts list. This will allow us to retrieve your contacts' name and phone number. The name will be used to organize and phone number will be used to send the SMS."
+        "NSContactsUsageDescription": "To share your receipt via SMS, we need access to your contacts list. This will allow us to retrieve your contacts' name and phone number. The name will be used to organize and phone number will be used to send the SMS.",
+        "NSPhotoLibraryUsageDescription": "To share your receipt via SMS, we need access to your photo library. This will allow us to retrieve your receipt image. The image will be used to send via SMS."
       }
     },
     "android": {

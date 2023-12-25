@@ -1,5 +1,6 @@
-import { Ionicons } from "@expo/vector-icons";
+import { Ionicons, MaterialIcons } from "@expo/vector-icons";
 import { Camera } from "expo-camera";
+import * as ImagePicker from "expo-image-picker";
 import React, { useEffect, useState } from "react";
 import {
   Alert,
@@ -36,6 +37,20 @@ export default function CameraScreen({ navigation, route }: any) {
     const photo = await camera.takePictureAsync();
     setImage(photo.uri);
     setStartCamera(false);
+  };
+
+  const galleryPicker = async () => {
+    let photo = await ImagePicker.launchImageLibraryAsync({
+      mediaTypes: ImagePicker.MediaTypeOptions.All,
+      allowsEditing: false,
+      aspect: [1, 1],
+      quality: 1,
+    });
+
+    if (!photo.canceled) {
+      setImage(photo.assets[0].uri);
+      setStartCamera(false);
+    }
   };
 
   useEffect(() => {
@@ -105,9 +120,16 @@ export default function CameraScreen({ navigation, route }: any) {
               <View className="absolute bottom-0 left-0 w-10 h-10 border-b-4 border-l-4 border-white/40"></View>
             </View>
 
-            <View className="items-center w-4/5 mb-5 ">
-              <TouchableOpacity className="items-center w-full" onPress={takePicture}>
-                <Ionicons name="radio-button-on" size={75} color="#2d7092" />
+            <View className="flex-row items-center justify-center w-4/5 mb-5 ">
+              <TouchableOpacity
+                className="absolute left-0"
+                onPress={() => navigation.navigate("LandingPage")}
+              >
+                <Ionicons name="return-down-back" size={50} color="#2d7092" />
+              </TouchableOpacity>
+              <Ionicons name="radio-button-on" size={75} color="#2d7092" onPress={takePicture} />
+              <TouchableOpacity className="absolute right-0" onPress={galleryPicker}>
+                <MaterialIcons name="photo-library" size={50} color="#2d7092" />
               </TouchableOpacity>
             </View>
           </SafeAreaView>
