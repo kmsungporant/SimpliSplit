@@ -57,7 +57,7 @@ export default function AddChargeScreen({ navigation, route }: any) {
     let price = 0;
     const endpoint = "https://api.mindee.net/v1/products/mindee/expense_receipts/v5/predict";
     const headers = {
-      //       Authorization: "Token 3eb14b2677e44a63b7ba915b2dc97768",
+      //     Authorization: "Token 3eb14b2677e44a63b7ba915b2dc97768",
       Authorization: "Token 97fb73e975e5da28213d00534e59863b",
       "Content-Type": "multipart/form-data",
     };
@@ -367,13 +367,15 @@ export default function AddChargeScreen({ navigation, route }: any) {
                   ? () => Alert.alert("Error", "You must have at least one order items.")
                   : () => {
                       navigation.navigate("Contacts", {
-                        orderItems: orderItems,
+                        orderItems,
                         source: source,
                         Gratuity: gratuity,
                         tax: tax,
                         finalPrice: finalPrice,
                         subTotal: totalPrice,
                         VenmoUserName: VenmoUserName,
+                        preTax: preTax,
+                        discount: discount,
                       });
                     }
               }

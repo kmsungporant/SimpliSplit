@@ -19,11 +19,20 @@ import {
 import AddContact from "../components/ContactsScreen/AddContact";
 import ContactList from "../components/ContactsScreen/ContactList";
 import SelectionPills from "../components/ContactsScreen/SelectionPills";
-import AddItems from "../components/addChargeScreen/AddItems";
 import Search from "../components/details/Search";
 import { PhoneContact } from "../interfaces/PhoneContact";
 export default function ContactsScreen({ navigation, route }: any) {
-  const { orderItems, source, tax, Gratuity, finalPrice, subTotal, VenmoUserName } = route.params;
+  const {
+    orderItems,
+    source,
+    tax,
+    Gratuity,
+    finalPrice,
+    subTotal,
+    VenmoUserName,
+    preTax,
+    discount,
+  } = route.params;
   const [contacts, setContacts] = useState<any>([]);
   const [searchText, setSearchText] = useState<String>("");
   const [addContactMenu, setAddContactMenu] = useState<Boolean>(false);
@@ -176,6 +185,8 @@ export default function ContactsScreen({ navigation, route }: any) {
                     finalPrice: finalPrice,
                     subTotal: subTotal,
                     VenmoUserName: VenmoUserName,
+                    preTax: preTax,
+                    discount: discount,
                   });
             }}
           >

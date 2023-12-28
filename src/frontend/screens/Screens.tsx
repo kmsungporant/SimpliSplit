@@ -5,6 +5,7 @@ import CameraScreen from "./CameraScreen";
 import ContactsScreen from "./ContactsScreen";
 import LandingPage from "./LandingPage";
 import OrganizeScreen from "./OrganizeScreen";
+import SendSMSScreen from "./SendSMSScreen";
 
 const Stack = createNativeStackNavigator();
 
@@ -17,6 +18,7 @@ export default function Screens() {
         <Stack.Screen name="AddCharge" component={AddChargeScreen} />
         <Stack.Screen name="Contacts" component={ContactsScreen} />
         <Stack.Screen name="Organize" component={OrganizeScreen} />
+        <Stack.Screen name="SendSMS" component={SendSMSScreen} />
       </Stack.Navigator>
     </NavigationContainer>
   );

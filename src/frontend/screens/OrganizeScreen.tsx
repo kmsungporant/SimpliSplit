@@ -1,5 +1,4 @@
 import { Fontisto } from "@expo/vector-icons";
-import * as SMS from "expo-sms";
 import { useRef, useState } from "react";
 import {
   Alert,
@@ -18,11 +17,11 @@ import Logo from "../components/details/Logo";
 import NavButton from "../components/details/NavButton";
 
 export default function OrganizeScreen({ navigation, route }: any) {
+  const { contacts, source, orderItems, Gratuity, tax, finalPrice, subTotal, VenmoUserName } =
+    route.params;
   const { width } = useWindowDimensions();
   const scrollX = useRef(new Animated.Value(0)).current;
 
-  const { contacts, source, orderItems, Gratuity, tax, finalPrice, subTotal, VenmoUserName } =
-    route.params;
   const [currPage, setCurrPage] = useState<number>(0);
   const [finalOrderItems, setFinalOrderItems] = useState<any>(orderItems);
   const [finalJson, setFinalJson] = useState<any>(
@@ -54,75 +53,6 @@ export default function OrganizeScreen({ navigation, route }: any) {
     setFinalOrderItems(orderItems);
   }
 
-  async function sendSMS(): Promise<void> {
-    const phoneNumbers: any[] = [];
-    let resultString = "\n\n";
-    let taxPercent = (tax / subTotal) * 100;
-    let gratuityPercent = (Gratuity / (subTotal + tax)) * 100;
-    const isAvailable: boolean = await SMS.isAvailableAsync();
-
-    resultString += `SubTotal: $${subTotal}\n`;
-    resultString += `Tax (${isNaN(taxPercent) ? "0" : taxPercent.toFixed(0)}%): $${tax.toFixed(
-      2
-    )}\n`;
-
-    resultString += `Gratuity (${gratuityPercent}%): $${Gratuity.toFixed(2)}\n`;
-    resultString += `Total Due: $${finalPrice.toFixed(2)}\n\n`;
-    resultString += `--------------------------\n\n`;
-
-    if (finalJson.length !== 0 && finalJson) {
-      finalJson.map((contact: any) => {
-        phoneNumbers.push(contact.phoneNumbers[0].number);
-      });
-
-      finalJson.map((contact: any) => {
-        let total = 0;
-        let taxTotal = 0;
-        let gratuityTotal = 0;
-        resultString += `Name: ${
-          contact.firstName + " " + (contact.lastName ? contact.lastName : "")
-        }\n\n`;
-        resultString += `Items Ordered: \n`;
-        contact.itemsOrdered.map((item: any) => {
-          resultString += `${item.itemName} - $${item.price.toFixed(2)}\n`;
-          total += item.price;
-        });
-        taxTotal = (taxPercent / 100) * total;
-        gratuityTotal = (gratuityPercent / 100) * (total + taxTotal);
-        resultString += `\n`;
-        resultString += `Subtotal: $${total.toFixed(2)}\n`;
-        resultString += `Tax (${
-          isNaN(taxPercent) ? "0" : taxPercent.toFixed(0)
-        }%): $${taxTotal.toFixed(2)}\n`;
-        resultString += `Gratuity (${gratuityPercent}%): $${gratuityTotal.toFixed(2)}\n`;
-        resultString += `Total: $${(total + taxTotal + gratuityTotal).toFixed(2)}\n\n`;
-        resultString += `https://account.venmo.com/payment-link?audience=friends&amount=${(
-          total +
-          taxTotal +
-          gratuityTotal
-        ).toFixed(2)}&note=Powered%20By%20SimpliSplit&recipients=%2C${VenmoUserName}&txn=pay`;
-
-        resultString += `\n--------------------------\n\n`;
-      });
-    }
-
-    if (isAvailable) {
-      try {
-        const { result }: any = await SMS.sendSMSAsync(phoneNumbers, resultString, {
-          attachments: {
-            uri: source,
-            mimeType: "image/jpeg",
-            filename: "Receipt.jpg",
-          },
-        });
-        if (result == "sent") {
-          navigation.navigate("LandingPage");
-        }
-      } catch (error) {
-        console.log(error);
-      }
-    }
-  }
   function updateCurrentSlideIndex(e: any) {
     const contentOffsetX = e.nativeEvent.contentOffset.x;
     const currentIndex = Math.round(contentOffsetX / width);
@@ -195,11 +125,19 @@ export default function OrganizeScreen({ navigation, route }: any) {
             className="items-center py-3 bg-Primary-color rounded-2xl"
             onPress={() =>
               finalOrderItems.length === 0
-                ? sendSMS()
+                ? navigation.navigate("SendSMS", {
+                    source: source,
+                    Gratuity: Gratuity,
+                    tax: tax,
+                    finalPrice: finalPrice,
+                    subTotal: subTotal,
+                    VenmoUserName: VenmoUserName,
+                    finalJson: finalJson,
+                  })
                 : Alert.alert("Error", "Please organize all order items to continue.")
             }
           >
-            <Text className="text-lg font-black text-center text-white">Send</Text>
+            <Text className="text-lg font-black text-center text-white">Continue</Text>
           </Pressable>
         </View>
       </View>
