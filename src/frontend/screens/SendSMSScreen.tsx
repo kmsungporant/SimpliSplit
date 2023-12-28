@@ -202,7 +202,10 @@ export default function SendSMSScreen({ navigation, route }: any) {
         </View>
         <Text className="text-lg font-black text-center text-black">Send To All</Text>
       </TouchableOpacity>
-      <TouchableOpacity className="items-center mt-3" onPress={navigation.navigate("LandingPage")}>
+      <TouchableOpacity
+        className="items-center mt-3"
+        onPress={() => navigation.navigate("LandingPage")}
+      >
         <Text className="text-xl">Back to Home</Text>
       </TouchableOpacity>
 
