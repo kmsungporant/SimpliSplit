@@ -9,7 +9,7 @@ export default function OnboardingItem({ item }: { item: OnboardItems }) {
   const animate = useRef<Lottie>(null);
 
   return (
-    <SafeAreaView className="items-center " style={{ width }}>
+    <SafeAreaView className="items-center" style={{ width }}>
       <LottieView
         autoPlay
         ref={animate}

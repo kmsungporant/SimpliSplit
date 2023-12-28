@@ -1,5 +1,5 @@
 import { Ionicons } from "@expo/vector-icons";
-import React from "react";
+import React, { useEffect, useRef } from "react";
 import { TextInput, View } from "react-native";
 
 export default function Search({ setSearchText }: any) {

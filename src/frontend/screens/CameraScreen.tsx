@@ -127,7 +127,9 @@ export default function CameraScreen({ navigation, route }: any) {
               >
                 <Ionicons name="return-down-back" size={50} color="#2d7092" />
               </TouchableOpacity>
-              <Ionicons name="radio-button-on" size={75} color="#2d7092" onPress={takePicture} />
+              <Pressable onPress={takePicture}>
+                <Ionicons name="radio-button-on" size={75} color="#2d7092" />
+              </Pressable>
               <TouchableOpacity className="absolute right-0" onPress={galleryPicker}>
                 <MaterialIcons name="photo-library" size={50} color="#2d7092" />
               </TouchableOpacity>

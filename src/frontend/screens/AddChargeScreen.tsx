@@ -6,6 +6,7 @@ import BottomSheet, {
 } from "@gorhom/bottom-sheet";
 import { Picker } from "@react-native-picker/picker";
 import axios from "axios";
+import Checkbox from "expo-checkbox";
 import { default as Lottie, default as LottieView } from "lottie-react-native";
 import React, { useCallback, useEffect, useRef, useState } from "react";
 import {
@@ -33,7 +34,9 @@ export default function AddChargeScreen({ navigation, route }: any) {
   const [taxPercentage, setTaxPercentage] = useState<number>(0);
   const [totalPrice, setTotalPrice] = useState<number>(0);
   const [finalPrice, setFinalPrice] = useState<number>(0);
+  const [discount, setDiscount] = useState<number>(0);
   const [editingItem, setEditingItem] = useState<number>(-1);
+  const [preTax, setPreTax] = useState<boolean>(false);
   const [loading, setLoading] = useState(true);
   const [indexOfLoading, setIndexOfLoading] = useState(0);
   const { width } = useWindowDimensions();
@@ -62,10 +65,10 @@ export default function AddChargeScreen({ navigation, route }: any) {
     let data = new FormData();
     data.append("document", { uri: source, name: "receipt.jpg", type: "image/jpeg" });
 
+    setInterval(() => {
+      setIndexOfLoading(1);
+    }, 10000);
     try {
-      setInterval(() => {
-        setIndexOfLoading(1);
-      }, 10000);
       const response = await axios.post(endpoint, data, { headers });
       let res = [];
       for (
@@ -97,6 +100,26 @@ export default function AddChargeScreen({ navigation, route }: any) {
           }));
         })
       );
+      if (res.length > 6) {
+        Alert.alert(
+          "Confirmation",
+          "Is Auto-gratuity included?",
+          [
+            {
+              text: "No",
+              style: "destructive",
+            },
+            {
+              text: "Yes",
+              onPress: () => {
+                setPreTax(true);
+                setGratuityPercentage(18);
+              },
+            },
+          ],
+          { cancelable: false }
+        );
+      }
 
       let taxRes = 0;
       for (let i = 0; i < response.data.document.inference.pages[0].prediction.taxes.length; i++) {
@@ -116,7 +139,6 @@ export default function AddChargeScreen({ navigation, route }: any) {
     } catch (error) {
       console.log("Failed");
     }
-
     setLoading(false);
   }
 
@@ -158,7 +180,6 @@ export default function AddChargeScreen({ navigation, route }: any) {
     if (orderItems.length > 0) {
       return;
     }
-
     processImage();
   }, []);
 
@@ -170,20 +191,28 @@ export default function AddChargeScreen({ navigation, route }: any) {
         }, 0)
         .toFixed(2)
     );
-    const taxTotal = subPrice * (taxPercentage / 100);
-    const gratuityTotal = (taxTotal + subPrice) * (gratuityPercentage / 100);
-    const totalOfAll = taxTotal + gratuityTotal + subPrice;
+    const subPriceWithDiscount = subPrice - discount;
+    let gratuityTotal = 0;
+    const taxTotal = subPriceWithDiscount * (taxPercentage / 100);
+    if (preTax) {
+      gratuityTotal = subPriceWithDiscount * (gratuityPercentage / 100);
+    } else {
+      gratuityTotal = (taxTotal + subPriceWithDiscount) * (gratuityPercentage / 100);
+    }
+    const totalOfAll = taxTotal + gratuityTotal + subPriceWithDiscount;
 
     setTotalPrice(subPrice);
     setFinalPrice(totalOfAll);
     if (subPrice === 0) {
       setTax(0);
       setGratuity(0);
+      setTotalPrice(0);
+      setFinalPrice(0);
     } else {
       setTax(taxTotal);
       setGratuity(gratuityTotal);
     }
-  }, [orderItems, gratuityPercentage, taxPercentage]);
+  }, [orderItems, gratuityPercentage, taxPercentage, preTax, discount]);
 
   const animationConfigs = useBottomSheetSpringConfigs({
     damping: 80,
@@ -272,6 +301,39 @@ export default function AddChargeScreen({ navigation, route }: any) {
                 <Text className="text-xl text-Black-color">${totalPrice.toFixed(2)}</Text>
               </View>
               <Pressable
+                className="flex-row items-center justify-between"
+                onPress={() => {
+                  Alert.prompt(
+                    "Discount",
+                    "Enter the discount amount",
+                    (text) => {
+                      if (isNaN(parseFloat(text))) {
+                        setDiscount(0);
+                      } else {
+                        setDiscount(parseFloat(text));
+                      }
+                    },
+                    "plain-text",
+                    "",
+                    "numeric"
+                  );
+                }}
+              >
+                <Text
+                  className={`w-24 font-black text-Black-color ${
+                    discount === 0 && "text-Black-color/30"
+                  }`}
+                >
+                  Discounts
+                  <AntDesign name="edit" size={16} color="red" />
+                </Text>
+                <Text
+                  className={`text-xl text-Black-color ${discount === 0 && "text-Black-color/30"}`}
+                >
+                  -${discount.toFixed(2)}
+                </Text>
+              </Pressable>
+              <Pressable
                 onPress={() => {
                   taxSheetRef.current?.expand();
                 }}
@@ -291,7 +353,6 @@ export default function AddChargeScreen({ navigation, route }: any) {
                   Gratuity {`(${gratuityPercentage}%)`}
                   <AntDesign name="edit" size={16} color="red" />
                 </Text>
-
                 <Text className="text-xl text-Black-color">${gratuity.toFixed(2)}</Text>
               </Pressable>
               <Text className="self-center my-3 italic text-Black-color/30">
@@ -328,10 +389,11 @@ export default function AddChargeScreen({ navigation, route }: any) {
             index={-1}
             enablePanDownToClose={true}
             ref={gratuitySheetRef}
+            backgroundStyle={{ backgroundColor: "#f2f0f0" }}
           >
             <BottomSheetView>
-              <View className="flex-row justify-between w-full px-5">
-                <Text className="relative text-xl font-black text-blue-black">
+              <View className="flex-row justify-between w-full px-5 ">
+                <Text className="relative text-xl font-black ">
                   Total Gratuity : ${gratuity.toFixed(2)}
                 </Text>
                 <Pressable onPress={() => gratuitySheetRef.current?.close()}>
@@ -339,6 +401,10 @@ export default function AddChargeScreen({ navigation, route }: any) {
                     <Text className="text-xl font-black">Done</Text>
                   </View>
                 </Pressable>
+              </View>
+              <View className="flex-row items-center px-5 mt-2 ">
+                <Checkbox value={preTax} onValueChange={setPreTax} color={"#2d7092"} />
+                <Text className="ml-2 ">Pre-Tax</Text>
               </View>
               {pickGratuity()}
             </BottomSheetView>
@@ -350,6 +416,7 @@ export default function AddChargeScreen({ navigation, route }: any) {
             index={-1}
             enablePanDownToClose={true}
             ref={taxSheetRef}
+            backgroundStyle={{ backgroundColor: "#f2f0f0" }}
           >
             <BottomSheetView>
               <View className="flex-row justify-between w-full px-5 ">
@@ -378,6 +445,7 @@ export default function AddChargeScreen({ navigation, route }: any) {
             onClose={() => {
               addItemSheetRef.current?.close();
             }}
+            backgroundStyle={{ backgroundColor: "#f2f0f0" }}
           >
             <TouchableWithoutFeedback
               onPress={() => {
@@ -404,6 +472,7 @@ export default function AddChargeScreen({ navigation, route }: any) {
             onClose={() => {
               itemEditSheetRef.current?.close();
             }}
+            backgroundStyle={{ backgroundColor: "#f2f0f0" }}
           >
             <TouchableWithoutFeedback
               onPress={() => {

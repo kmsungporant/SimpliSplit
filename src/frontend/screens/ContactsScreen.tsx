@@ -162,33 +162,25 @@ export default function ContactsScreen({ navigation, route }: any) {
             keyExtractor={(item) => item.id}
           />
 
-          <View
-            className={`absolute bottom-0 z-50 items-center self-center w-full ${
-              selectedContacts.length === 0 && "-z-50"
-            }`}
+          <Pressable
+            className="items-center w-full py-3 rounded-2xl bg-Primary-color "
+            onPress={() => {
+              selectedContacts.length === 0
+                ? Alert.alert("Error", "Select at least one contact to continue.")
+                : navigation.navigate("Organize", {
+                    orderItems: orderItems,
+                    contacts: selectedContacts,
+                    source: source,
+                    Gratuity: Gratuity,
+                    tax: tax,
+                    finalPrice: finalPrice,
+                    subTotal: subTotal,
+                    VenmoUserName: VenmoUserName,
+                  });
+            }}
           >
-            {selectedContacts.length > 0 && (
-              <Pressable
-                className="items-center w-full py-3 rounded-2xl bg-Primary-color "
-                onPress={() => {
-                  selectedContacts.length === 0
-                    ? Alert.alert("Error", "Select at least one contact to continue.")
-                    : navigation.navigate("Organize", {
-                        orderItems: orderItems,
-                        contacts: selectedContacts,
-                        source: source,
-                        Gratuity: Gratuity,
-                        tax: tax,
-                        finalPrice: finalPrice,
-                        subTotal: subTotal,
-                        VenmoUserName: VenmoUserName,
-                      });
-                }}
-              >
-                <Text className="text-lg font-black text-center text-white">Continue</Text>
-              </Pressable>
-            )}
-          </View>
+            <Text className="text-lg font-black text-center text-white">Continue</Text>
+          </Pressable>
         </View>
       </TouchableWithoutFeedback>
 

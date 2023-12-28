@@ -26,7 +26,7 @@ export default function NavButton({
             <Animated.View
               key={index}
               className={`h-2.5 ${
-                currentSlideIndex === index ? "bg-white " : "bg-gray-600"
+                currentSlideIndex === index ? "bg-Primary-color " : "bg-gray-600"
               } rounded-full mx-1`}
               style={[{ width: 5 }, { width: dotWidth }]}
             />
