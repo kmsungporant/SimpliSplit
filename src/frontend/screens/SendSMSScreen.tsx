@@ -38,7 +38,7 @@ export default function SendSMSScreen({ navigation, route }: any) {
   const taxPercent = (tax / subTotal) * 100;
   const gratuityPercent = (Gratuity / (subTotal + tax)) * 100;
 
-  async function sendToAll(): Promise<void> {
+  async function sendInvoice(): Promise<void> {
     const phoneNumbers: any[] = [];
     let resultString = "\n\n";
     const isAvailable: boolean = await SMS.isAvailableAsync();
@@ -78,14 +78,11 @@ export default function SendSMSScreen({ navigation, route }: any) {
         }%): $${taxTotal.toFixed(2)}\n`;
         resultString += `Gratuity (${gratuityPercent}%): $${gratuityTotal.toFixed(2)}\n`;
         resultString += `Total: $${(total + taxTotal + gratuityTotal).toFixed(2)}\n\n`;
-        resultString += `https://account.venmo.com/payment-link?audience=friends&amount=${(
-          total +
-          taxTotal +
-          gratuityTotal
-        ).toFixed(2)}&note=Powered%20By%20SimpliSplit&recipients=%2C${VenmoUserName}&txn=pay`;
 
         resultString += `\n--------------------------\n\n`;
       });
+
+      resultString += "Powered By SimpliSplit.\n\n";
     }
 
     if (isAvailable) {
@@ -97,9 +94,6 @@ export default function SendSMSScreen({ navigation, route }: any) {
             filename: "Receipt.jpg",
           },
         });
-        if (result == "sent") {
-          navigation.navigate("LandingPage");
-        }
       } catch (error) {
         console.log(error);
       }
@@ -107,18 +101,11 @@ export default function SendSMSScreen({ navigation, route }: any) {
   }
 
   async function sendToIndividual(contact: any): Promise<void> {
-    let resultString = "\n\n";
-    const isAvailable: boolean = await SMS.isAvailableAsync();
-
-    resultString += "Here is your total due from the receipt above.\n\n";
-
     let total = 0;
     let taxTotal = 0;
     let gratuityTotal = 0;
 
-    const disItem = (resultString += `Items Ordered: \n`);
     contact.itemsOrdered.map((item: any) => {
-      resultString += `${item.itemName} - $${item.price.toFixed(2)}\n`;
       total += item.price;
     });
     taxTotal = (taxPercent / 100) * total;
@@ -129,40 +116,14 @@ export default function SendSMSScreen({ navigation, route }: any) {
     } else {
       gratuityTotal = (taxTotal + subPriceWithDiscount) * (gratuityPercent / 100);
     }
-    resultString += `\n`;
 
-    resultString += `Subtotal: $${subPriceWithDiscount.toFixed(2)}\n`;
-    resultString += `Tax (${taxPercent.toFixed(0)}%): $${taxTotal.toFixed(2)}\n`;
-    resultString += `Gratuity (${gratuityPercent.toFixed(0)}%): $${gratuityTotal.toFixed(2)}\n`;
-    resultString += `Total: $${(total + taxTotal + gratuityTotal).toFixed(2)}\n\n`;
-    resultString += `--------------------------\n\n`;
-    resultString += "Please click the link below to pay.\n\n";
-    resultString += `https://account.venmo.com/payment-link?audience=friends&amount=${(
-      total +
-      taxTotal +
-      gratuityTotal
-    ).toFixed(2)}&note=Powered%20By%20SimpliSplit&recipients=%2C${VenmoUserName}&txn=pay`;
+    (total + taxTotal + gratuityTotal).toFixed(2);
 
-    if (isAvailable) {
-      try {
-        const { result }: any = await SMS.sendSMSAsync(
-          contact.phoneNumbers[0].digits,
-          resultString,
-          {
-            attachments: {
-              uri: source,
-              mimeType: "image/jpeg",
-              filename: "Receipt.jpg",
-            },
-          }
-        );
-        if (result == "sent") {
-          console.log("sent");
-        }
-      } catch (error) {
-        console.log(error);
-      }
-    }
+    Linking.openURL(
+      `https://venmo.com/?txn=charge&audience=private&recipients=${
+        contact.phoneNumbers[0].digits
+      }&amount=${(total + taxTotal + gratuityTotal).toFixed(2)}`
+    );
   }
   return (
     <SafeAreaView className="flex-1 w-full bg-background-color">
@@ -194,13 +155,13 @@ export default function SendSMSScreen({ navigation, route }: any) {
         className="mt-5"
       />
       <TouchableOpacity
-        onPress={() => sendToAll()}
+        onPress={() => sendInvoice()}
         className="flex-row items-center justify-center py-2 mx-10 mt-2 rounded-2xl bg-Primary-color"
       >
         <View className="px-2">
           <FontAwesome name="send" size={30} />
         </View>
-        <Text className="text-lg font-black text-center text-black">Send To All</Text>
+        <Text className="text-lg font-black text-center text-black">Send Invoice</Text>
       </TouchableOpacity>
       <TouchableOpacity
         className="items-center mt-3"
@@ -211,10 +172,11 @@ export default function SendSMSScreen({ navigation, route }: any) {
 
       <View className="items-center mt-5 h-1/4">
         <View className="items-center justify-center ">
-          {devInfo.map((info) => (
+          {devInfo.map((info, key) => (
             <TouchableOpacity
               onPress={() => Linking.openURL(info.link)}
               className="flex-row items-center justify-center"
+              key={key}
             >
               <View className="p-2">{info.Icon}</View>
               <Text className="text-xl font-black text-Black-color">{info.text}</Text>
